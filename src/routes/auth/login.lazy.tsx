@@ -92,6 +92,37 @@ export function LoginPage() {
                         <br />
                         <form.Field
                             name="password"
+                            validators={{
+                                onChange: z
+                                    .string()
+                                    .min(8, "Password must be at least 8 characters")
+                                    .refine(pass => {
+                                        const containsUppercase = (ch: string) => /[A-Z]/.test(ch)
+                                        const containsLowercase = (ch: string) => /[a-z]/.test(ch)
+                                        const containsSpecialChar = (ch: string) => /[`!@#$%^&*()_+\[\]{};':"\\|,.<>\/?~]/.test(ch)
+                                        let countOfUppercase = 0,
+                                            countOfLowercase = 0,
+                                            countOfNumbers = 0,
+                                            countOfSpecialChar = 0;
+                                        for (let i = 0; i < pass.length; i++) {
+                                            let ch = pass.charAt(i)
+                                            if (!isNaN(+ch)) countOfNumbers++;
+                                            else if (containsUppercase(ch)) countOfUppercase++;
+                                            else if (containsLowercase(ch)) countOfLowercase++;
+                                            else if (containsSpecialChar(ch)) countOfSpecialChar++;
+                                        }
+                                        return (countOfLowercase > 0 && countOfUppercase > 0 && countOfSpecialChar > 0 && countOfNumbers > 0)
+                                    }, { message: "Password must contain numbers, special characters, lowercase, uppercase " }),
+                                onChangeAsyncDebounceMs: 500,
+                                onChangeAsync: z.string().refine(
+                                    async (value) => {
+                                        await new Promise((resolve) => setTimeout(resolve, 1000))
+                                        return !value.includes('error')
+                                    },
+                                    { message: "No 'error' allowed in first name", },
+                                ),
+                            }}
+
                             children={(field) => (
                                 <>
                                     <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -104,6 +135,7 @@ export function LoginPage() {
                                         onBlur={field.handleBlur}
                                         onChange={(e) => field.handleChange(e.target.value)}
                                         placeholder='****'
+                                        type='password'
                                     />
                                     <FieldInfo field={field} />
                                 </>
