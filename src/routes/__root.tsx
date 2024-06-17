@@ -1,5 +1,6 @@
 import { NavBar } from '@/components/navbar'
 import { SideBar } from '@/components/sidebar'
+import { Toaster } from '@/components/ui/sonner'
 import { createRootRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
@@ -18,6 +19,7 @@ function HomeLayout() {
         <NavBar />
         <Outlet />
         <TanStackRouterDevtools />
+        <Toaster />
     </div>
 }
 
@@ -26,6 +28,7 @@ function DashBoardLayout() {
         <SideBar />
         <Outlet />
         <TanStackRouterDevtools />
+        <Toaster />
     </div>
 }
 
@@ -33,5 +36,6 @@ function AuthLayout() {
     return <div>
         <Outlet />
         <TanStackRouterDevtools />
+        <Toaster />
     </div>
 }

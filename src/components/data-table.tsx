@@ -21,12 +21,16 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     filterBy: keyof TData
+    DeleteBtn: React.ReactNode
+    InsertBtn: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    filterBy
+    filterBy,
+    DeleteBtn,
+    InsertBtn,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -63,8 +67,8 @@ export function DataTable<TData, TValue>({
                     {table.getFilteredSelectedRowModel().rows.length} de{" "}
                     {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
                 </div>
-                <Button size="sm" variant="secondary">Eliminar</Button>
-                <Button size="sm">Insertar</Button>
+                {DeleteBtn}
+                {InsertBtn}
             </div>
             <Table>
                 <TableHeader>
@@ -112,7 +116,7 @@ export function DataTable<TData, TValue>({
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => table.previousPage()}
+                    onClick={table.previousPage}
                     disabled={!table.getCanPreviousPage()}
                 >
                     Anterior
@@ -120,7 +124,7 @@ export function DataTable<TData, TValue>({
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => table.nextPage()}
+                    onClick={table.nextPage}
                     disabled={!table.getCanNextPage()}
                 >
                     Siguiente

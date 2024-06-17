@@ -1,7 +1,3 @@
-import { DataTable } from '@/components/data-table'
-import { createLazyFileRoute } from '@tanstack/react-router'
-
-import type { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -12,31 +8,16 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { Product, getProducts } from '@/queries/products'
-import { useQuery } from '@tanstack/react-query'
+import type { ColumnDef } from "@tanstack/react-table"
+import { User } from '@/queries/users'
+import { useMutation } from "@tanstack/react-query"
+import { api } from "@/api"
+import { UpdateUserForm } from "../forms/user"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 
-export const Route = createLazyFileRoute('/dashboard/inventory')({
-    component: InventoryPage
-})
-
-function InventoryPage() {
-    const { data, error } = useQuery({
-        queryKey: ['products'],
-        queryFn: getProducts
-    })
-
-    if (error || !data) return <div> Error </div>
-
-    return <div className="container mx-auto py-4">
-        <DataTable columns={columns} data={data} filterBy="name" />
-    </div>
-}
-
-
-
-
-const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<User>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -64,37 +45,26 @@ const columns: ColumnDef<Product>[] = [
         header: "id"
     },
     {
-        accessorKey: "name",
+        accessorKey: "username",
         header: ({ column }) =>
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Nombre
+                Usuario
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
     },
     {
-        accessorKey: "desc",
-        header: "Descripcion",
+        accessorKey: "name",
+        header: "Nombre",
     },
     {
-        accessorKey: "price",
-        header: "Precio",
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("price"))
-            const formatted = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-            }).format(amount)
-
-            return <div>{formatted}</div>
-        }
-    },
-    {
-        accessorKey: "type",
-        header: "Tipo",
+        accessorKey: "role",
+        header: "Rol",
+        cell: ({ row }) =>
+            <Badge>{row.original.role}</Badge>
     },
     {
         accessorKey: "acciones",
@@ -114,8 +84,26 @@ const columns: ColumnDef<Product>[] = [
                     >
                         Copiar ID
                     </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={e => e.preventDefault()}>
+                        <UpdateDialog id={row.original.id} />
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
     }
 ]
 
+function UpdateDialog({ id }: { id: number }) {
+    return <Dialog>
+        <DialogTrigger>
+            Actualizar
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+                <DialogTitle>Actualizar Usuario</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                <UpdateUserForm id={id} />
+            </div>
+        </DialogContent>
+    </Dialog>
+}
