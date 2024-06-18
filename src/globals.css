@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+    background-image: url('src/assets/background-pattern.svg');
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    background-size: contain;
+}
+
 @layer base {
     :root {
         --background: 25 38% 99%;
@@ -23,29 +30,40 @@
         --destructive: 11 81% 32%;
         --destructive-foreground: 11 81% 92%;
         --ring: 25 74% 30%;
-        --radius: 0.5rem;
+        --radius: 1.5rem;
     }
 
     .dark {
-        --background: 25 57% 1%;
-        --foreground: 25 18% 100%;
-        --muted: 355 17% 9%;
-        --muted-foreground: 355 7% 63%;
-        --popover: 25 57% 1%;
-        --popover-foreground: 25 18% 100%;
-        --card: 25 57% 2%;
-        --card-foreground: 0 0% 100%;
-        --border: 25 9% 11%;
-        --input: 25 9% 11%;
-        --primary: 25 74% 30%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 355 74% 30%;
-        --secondary-foreground: 355 74% 90%;
-        --accent: 55 74% 30%;
-        --accent-foreground: 0 0% 100%;
-        --destructive: 11 81% 58%;
-        --destructive-foreground: 0 0% 0%;
-        --ring: 25 74% 30%;
+        --gradient: #eacda3;
+
+        --background: 38 40.95% 6.24%;
+        --foreground: 38 6.3% 98.9%;
+
+        --muted: 38 31.5% 23.400000000000002%;
+        --muted-foreground: 38 6.3% 57.8%;
+
+        --popover: 38 52.4% 10.14%;
+        --popover-foreground: 38 6.3% 98.9%;
+
+        --card: 38 52.4% 10.14%;
+        --card-foreground: 38 6.3% 98.9%;
+
+        --border: 38 31.5% 23.400000000000002%;
+        --input: 38 31.5% 23.400000000000002%;
+
+        --primary: 38 63% 78%;
+        --primary-foreground: 38 6.3% 7.800000000000001%;
+
+        --secondary: 38 31.5% 23.400000000000002%;
+        --secondary-foreground: 38 6.3% 98.9%;
+
+        --accent: 38 31.5% 23.400000000000002%;
+        --accent-foreground: 38 6.3% 98.9%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 38 6.3% 98.9%;
+
+        --ring: 38 63% 78%;
     }
 }
 

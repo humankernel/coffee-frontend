@@ -14,7 +14,7 @@ export function NavBar() {
     const session = useStore(s => s.session)
 
     return <div className="px-4 py-2 md:py-4 md:px-10">
-        <header className="flex justify-between items-center max-w-screen-lg mx-auto">
+        <header className="flex justify-between py-3 items-center max-w-screen-xl mx-auto">
             <div className="flex gap-2 items-center">
                 <Link to="/" className="group">
                     <CoffeeIcon size={25} className="group-hover:-rotate-12 transition-transform" />
