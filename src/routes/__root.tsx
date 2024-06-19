@@ -1,10 +1,14 @@
+import { ErrorPage } from '@/components/error-page'
 import { NavBar } from '@/components/navbar'
 import { SideBar } from '@/components/sidebar'
 import { Toaster } from '@/components/ui/sonner'
 import { createRootRoute, Outlet, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
-export const Route = createRootRoute({ component: RootLayout })
+export const Route = createRootRoute({
+    component: RootLayout,
+    errorComponent: ErrorPage
+})
 
 function RootLayout() {
     const pathname = useLocation({ select: (location) => location.pathname })

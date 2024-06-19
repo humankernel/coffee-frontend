@@ -9,6 +9,8 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { CoffeeIcon, PercentIcon, UsersIcon } from "lucide-react"
+import { useQuery } from '@tanstack/react-query'
+import { getRecentSales } from '@/queries/sales'
 
 export const Route = createLazyFileRoute('/dashboard/')({ component: DashboardPage })
 
@@ -90,7 +92,12 @@ function BestSelledCoffee() {
 
 
 function RecentSales() {
-    // const sales = await getRecentSales(10)
+    const { data, error } = useQuery({
+        queryKey: ['sales'],
+        queryFn: getRecentSales
+    })
+
+    if (!data || error) return "error"
 
     return (
         <Card>
@@ -98,25 +105,23 @@ function RecentSales() {
                 <CardTitle>Ventas Recientes</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-8">
-                {/* {sales.map(sale =>
+                {data.map(sale =>
                     <div key={sale.id} className="flex items-center gap-4">
                         <Avatar className="hidden h-9 w-9 sm:flex">
                             <AvatarImage src="/avatars/05.png" alt="Avatar" />
                             <AvatarFallback>SD</AvatarFallback>
                         </Avatar>
                         <div className="grid gap-1">
-                            <p className="text-sm font-medium leading-none">{sale.fullname}</p>
+                            <p className="text-sm font-medium leading-none">sale.user.name</p>
                             <p className="text-sm text-muted-foreground">
-                                {sale.username}
+                                sale.user.username
                             </p>
                         </div>
                         <div className="ml-auto font-medium">+${sale.price}</div>
                     </div>
-                )} */}
+                )}
             </CardContent>
         </Card>
     )
 }
-
-
 

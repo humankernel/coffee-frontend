@@ -17,7 +17,6 @@ export type User = {
 };
 
 export async function getUser(id: number): Promise<User> {
-  console.log(`/users/${id}`);
   return api
     .get<User>(`/users/${id}`)
     .then(({ data }) => data)
@@ -66,9 +65,9 @@ export async function updateUser(
     });
 }
 
-export async function deleteUser(id: string): Promise<User[]> {
+export async function deleteUser(id: number): Promise<User> {
   return api
-    .delete<User>("/users")
+    .delete<User>(`/users/${id}`)
     .then(({ data }) => {
       toast("Usuario eliminado correctamente");
       return data;

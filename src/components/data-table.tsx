@@ -16,21 +16,24 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { useState } from "react"
+import { Card } from "./ui/card"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     filterBy: keyof TData
-    DeleteBtn: React.ReactNode
+    deleteBtn: boolean
     InsertBtn: React.ReactNode
+    onDelete: (idxs: number[]) => void;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
     filterBy,
-    DeleteBtn,
+    deleteBtn: DeleteBtn,
     InsertBtn,
+    onDelete
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -49,8 +52,13 @@ export function DataTable<TData, TValue>({
         state: { sorting, columnFilters, rowSelection },
     })
 
+    const handleDelete = () => {
+        const idxs = Object.keys(rowSelection).map(Number)
+        onDelete(idxs);
+    }
+
     return (
-        <div className="rounded-md border">
+        <Card>
             <div className="flex items-center p-4 gap-4">
                 <div className="relative">
                     <Input
@@ -67,7 +75,11 @@ export function DataTable<TData, TValue>({
                     {table.getFilteredSelectedRowModel().rows.length} de{" "}
                     {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
                 </div>
-                {DeleteBtn}
+                {DeleteBtn &&
+                    <Button onClick={handleDelete} size="sm" variant="secondary">
+                        Delete
+                    </Button>
+                }
                 {InsertBtn}
             </div>
             <Table>
@@ -130,7 +142,7 @@ export function DataTable<TData, TValue>({
                     Siguiente
                 </Button>
             </div>
-        </div>
+        </Card >
     )
 }
 

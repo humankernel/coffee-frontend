@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { Link, createLazyFileRoute } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import type { FieldApi } from '@tanstack/react-form'
 import { Input } from '@/components/ui/input'
@@ -33,9 +33,7 @@ function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
 export function LoginPage() {
     const form = useForm({
         defaultValues: { username: '', password: '', },
-        onSubmit: async ({ value }) => {
-            console.log(value)
-        },
+        onSubmit: async ({ value }) => { console.log(value) },
         validatorAdapter: zodValidator
     })
 
@@ -67,26 +65,22 @@ export function LoginPage() {
                                         { message: "No 'error' allowed in first name", },
                                     ),
                                 }}
-                                children={(field) => {
-                                    return (
-                                        <>
-                                            <div className="flex flex-col space-y-1.5">
-                                                <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                                    Username:
-                                                </Label>
-                                                <Input
-                                                    id={field.name}
-                                                    name={field.name}
-                                                    value={field.state.value}
-                                                    onBlur={field.handleBlur}
-                                                    onChange={(e) => field.handleChange(e.target.value)}
-                                                    placeholder='johndoe'
-                                                />
-                                                <FieldInfo field={field} />
-                                            </div>
-                                        </>
-                                    )
-                                }}
+                                children={(field) =>
+                                    <div className="flex flex-col space-y-1.5">
+                                        <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            Nombre de Usuario
+                                        </Label>
+                                        <Input
+                                            id={field.name}
+                                            name={field.name}
+                                            value={field.state.value}
+                                            onBlur={field.handleBlur}
+                                            onChange={(e) => field.handleChange(e.target.value)}
+                                            placeholder='johndoe'
+                                        />
+                                        <FieldInfo field={field} />
+                                    </div>
+                                }
                             />
                         </div>
                         <br />
@@ -124,7 +118,7 @@ export function LoginPage() {
                             }}
 
                             children={(field) => (
-                                <>
+                                <div className="flex flex-col space-y-1.5">
                                     <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Password:
                                     </Label>
@@ -138,11 +132,12 @@ export function LoginPage() {
                                         type='password'
                                     />
                                     <FieldInfo field={field} />
-                                </>
+                                </div>
                             )}
                         />
                         <p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-2">
-                            No tienes una cuenta? <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Registrase</a>
+                            No tienes una cuenta?
+                            <Link to="/auth/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Registrase</Link>
                         </p>
                     </CardContent>
                     <CardFooter className="flex justify-between">

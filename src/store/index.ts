@@ -6,7 +6,7 @@ type Store = {
   setAuthUser: (user: User) => void;
 };
 
-export const useStore = create<Store>((set) => ({
+export const useAuthStore = create<Store>((set) => ({
   session: null,
   setAuthUser: (user) => set({ session: user }),
 }));

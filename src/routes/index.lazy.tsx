@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { createLazyFileRoute } from '@tanstack/react-router'
+
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -28,54 +28,37 @@ function Index() {
                     <Button size="lg" className='my-10 text-lg'>¡Ordena ya!</Button>
                 </div>
                 <div className="relative flex justify-center items-center">
-                     <img src="src/assets/home-img.svg" alt="logo" className="z-20 w-[24rem] h-[24rem] md:w-[30rem] md:h-[30rem] mx-auto md:mr-0 " />
-                     <div className="z-0 absolute bg-[radial-gradient(circle_at_center,#4d3917_0%,transparent_70%)] w-[24rem] h-[24rem] md:w-[30rem] md:h-[30rem] mx-auto md:mr-0"> </div>
-                     
-                   
-                    
-                </div> 
-    </header>
-            <section className='mt-2 mx-auto w-full px-4'>
-                <h2 className='text-md opacity-40 mb-2'>Productos Populares</h2>
-                <div className='flex gap-10'>
-                <div className='flex gap-2 w-full overflow-x-hidden p-2'>
-                    <Card className='flex flex-row-reverse overflow-hidden'>
-                        <CardHeader>
-                            <CardTitle > Hot Mocca with Creme </CardTitle>
-                            <CardDescription className='font-semibold text-2xl pt-5'>$10.00</CardDescription>
-                        </CardHeader>
-                        <CardContent className='p-0 '>
-                            <img src="src\assets\hot drinks.jpg" alt="" className='w-[9rem]' />
-                        </CardContent>
-                    </Card>
+                    <img src="src/assets/home-img.svg" alt="logo" className="z-20 w-[24rem] h-[24rem] md:w-[30rem] md:h-[30rem] mx-auto md:mr-0 " />
+                    <div className="z-0 absolute bg-[radial-gradient(circle_at_center,#4d3917_0%,transparent_70%)] w-[24rem] h-[24rem] md:w-[30rem] md:h-[30rem] mx-auto md:mr-0"> </div>
 
                 </div>
-                <div className='flex gap-2 w-full overflow-x-hidden p-2'>
-                    <Card className='flex flex-row-reverse overflow-hidden'>
-                        <CardHeader>
-                            <CardTitle > Hot Mocca with Creme </CardTitle>
-                            <CardDescription className='font-semibold text-2xl pt-5'>$10.00</CardDescription>
-                        </CardHeader>
-                        <CardContent className='p-0 '>
-                            <img src="src\assets\hot drinks.jpg" alt="" className='w-[9rem]' />
-                        </CardContent>
-                    </Card>
-
-                </div>
-                <div className='flex gap-2 w-full overflow-x-hidden p-2'>
-                    <Card className='flex flex-row-reverse overflow-hidden'>
-                        <CardHeader>
-                            <CardTitle > Hot Mocca with Creme </CardTitle>
-                            <CardDescription className='font-semibold text-2xl pt-5'>$10.00</CardDescription>
-                        </CardHeader>
-                        <CardContent className='p-0 '>
-                            <img src="src\assets\hot drinks.jpg" alt="" className='w-[9rem]' />
-                        </CardContent>
-                    </Card>
-
-                </div>
-                </div>
-            </section>
+            </header>
+            <PopularsProducts />
         </main>
     )
+}
+
+function PopularsProducts() {
+    const products = [
+        { id: 0, name: "Hot Mocca with Creme", price: 10.00, img: "src/assets/hot drinks.jpg" },
+        { id: 1, name: "Hot Mocca with Creme", price: 10.00, img: "src/assets/hot drinks.jpg" },
+        { id: 2, name: "Hot Mocca with Creme", price: 10.00, img: "src/assets/hot drinks.jpg" },
+    ]
+
+    return <section className='mt-2 mx-auto w-full px-4'>
+        <h2 className='text-xl opacity-70 mb-8'>Productos Populares</h2>
+        <div className='flex gap-10'>
+            {products.map(product =>
+                <Card className='flex flex-row-reverse overflow-hidden max-h-32 hover:brightness-90 transition-all cursor-pointer'>
+                    <CardHeader className='p-2 pl-4'>
+                        <CardTitle className='text-xl'> {product.name} </CardTitle>
+                        <CardDescription className='font-semibold text-xl'>${product.price}</CardDescription>
+                    </CardHeader>
+                    <CardContent className='p-0'>
+                        <img src={product.img} alt={product.name} className='w-[12rem]' />
+                    </CardContent>
+                </Card>
+            )}
+        </div>
+    </section>
 }

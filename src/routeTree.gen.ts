@@ -20,11 +20,14 @@ const StoreLazyImport = createFileRoute('/store')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const DashboardIndexLazyImport = createFileRoute('/dashboard/')()
+const UserProfileLazyImport = createFileRoute('/user/profile')()
 const DashboardUsersLazyImport = createFileRoute('/dashboard/users')()
 const DashboardSuppliersLazyImport = createFileRoute('/dashboard/suppliers')()
 const DashboardQsLazyImport = createFileRoute('/dashboard/qs')()
 const DashboardOrdersLazyImport = createFileRoute('/dashboard/orders')()
 const DashboardInventoryLazyImport = createFileRoute('/dashboard/inventory')()
+const AuthRegisterLazyImport = createFileRoute('/auth/register')()
+const AuthLogoutLazyImport = createFileRoute('/auth/logout')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
 
 // Create/Update Routes
@@ -50,6 +53,11 @@ const DashboardIndexLazyRoute = DashboardIndexLazyImport.update({
 } as any).lazy(() =>
   import('./routes/dashboard/index.lazy').then((d) => d.Route),
 )
+
+const UserProfileLazyRoute = UserProfileLazyImport.update({
+  path: '/user/profile',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/user/profile.lazy').then((d) => d.Route))
 
 const DashboardUsersLazyRoute = DashboardUsersLazyImport.update({
   path: '/dashboard/users',
@@ -83,6 +91,16 @@ const DashboardInventoryLazyRoute = DashboardInventoryLazyImport.update({
 } as any).lazy(() =>
   import('./routes/dashboard/inventory.lazy').then((d) => d.Route),
 )
+
+const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
+  path: '/auth/register',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route))
+
+const AuthLogoutLazyRoute = AuthLogoutLazyImport.update({
+  path: '/auth/logout',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/auth/logout.lazy').then((d) => d.Route))
 
 const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   path: '/auth/login',
@@ -121,6 +139,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginLazyImport
       parentRoute: typeof rootRoute
     }
+    '/auth/logout': {
+      id: '/auth/logout'
+      path: '/auth/logout'
+      fullPath: '/auth/logout'
+      preLoaderRoute: typeof AuthLogoutLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard/inventory': {
       id: '/dashboard/inventory'
       path: '/dashboard/inventory'
@@ -156,6 +188,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardUsersLazyImport
       parentRoute: typeof rootRoute
     }
+    '/user/profile': {
+      id: '/user/profile'
+      path: '/user/profile'
+      fullPath: '/user/profile'
+      preLoaderRoute: typeof UserProfileLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/dashboard'
@@ -173,11 +212,14 @@ export const routeTree = rootRoute.addChildren({
   AboutLazyRoute,
   StoreLazyRoute,
   AuthLoginLazyRoute,
+  AuthLogoutLazyRoute,
+  AuthRegisterLazyRoute,
   DashboardInventoryLazyRoute,
   DashboardOrdersLazyRoute,
   DashboardQsLazyRoute,
   DashboardSuppliersLazyRoute,
   DashboardUsersLazyRoute,
+  UserProfileLazyRoute,
   DashboardIndexLazyRoute,
 })
 
@@ -193,11 +235,14 @@ export const routeTree = rootRoute.addChildren({
         "/about",
         "/store",
         "/auth/login",
+        "/auth/logout",
+        "/auth/register",
         "/dashboard/inventory",
         "/dashboard/orders",
         "/dashboard/qs",
         "/dashboard/suppliers",
         "/dashboard/users",
+        "/user/profile",
         "/dashboard/"
       ]
     },
@@ -213,6 +258,12 @@ export const routeTree = rootRoute.addChildren({
     "/auth/login": {
       "filePath": "auth/login.lazy.tsx"
     },
+    "/auth/logout": {
+      "filePath": "auth/logout.lazy.tsx"
+    },
+    "/auth/register": {
+      "filePath": "auth/register.lazy.tsx"
+    },
     "/dashboard/inventory": {
       "filePath": "dashboard/inventory.lazy.tsx"
     },
@@ -227,6 +278,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/dashboard/users": {
       "filePath": "dashboard/users.lazy.tsx"
+    },
+    "/user/profile": {
+      "filePath": "user/profile.lazy.tsx"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.lazy.tsx"

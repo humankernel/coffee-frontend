@@ -259,6 +259,7 @@ export function UpdateUserForm({ id }: { id: number }) {
                                 onBlur={field.handleBlur}
                                 onChange={(e) => field.handleChange(e.target.value)}
                                 placeholder={data?.password}
+                                type="password"
                             />
                             <FieldInfo field={field} />
                         </>

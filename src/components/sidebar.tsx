@@ -1,15 +1,20 @@
 import { Link } from "@tanstack/react-router"
-import { CoffeeIcon } from "lucide-react"
+import { BarcodeIcon, BoxIcon, CircleHelpIcon, CoffeeIcon, ContactIcon, UserIcon } from "lucide-react"
+import { useLocation } from "@tanstack/react-router"
+import { cn } from "@/lib/utils"
+import { Button } from "./ui/button"
 
 const LINKS = [
-    { name: 'Inventario', href: 'inventory' },
-    { name: 'Usuarios', href: 'users' },
-    { name: 'Proveedores', href: 'providers' },
-    { name: 'Pedidos', href: 'orders' },
-    { name: 'Q&S', href: 'qs' },
+    { name: 'Inventario', href: 'inventory', icon: BoxIcon },
+    { name: 'Usuarios', href: 'users', icon: UserIcon },
+    { name: 'Proveedores', href: 'providers', icon: ContactIcon },
+    { name: 'Pedidos', href: 'orders', icon: BarcodeIcon },
+    { name: 'Q&S', href: 'qs', icon: CircleHelpIcon },
 ]
 
 export function SideBar() {
+    const pathname = useLocation({ select: (location) => location.pathname })
+
     return <aside className="border-r w-44 p-4 h-[calc(100vh-60px)]">
         <Link className="flex items-center gap-2 mb-4 px-4 text-sm group" to="/dashboard">
             <CoffeeIcon size={25} className="group-hover:-rotate-12 transition-transform" />
@@ -17,15 +22,22 @@ export function SideBar() {
                 Dashboard
             </p>
         </Link>
-        <nav className="flex flex-col gap-2">
-            {
-                LINKS.map(link =>
-                    <Link key={link.name} to={link.href} className="px-4 hover:bg-white/20 py-2 rounded-md">
+        <nav className="flex flex-col gap-2 mt-10">
+            {LINKS.map(link =>
+                <Button variant="ghost" size="sm"
+                    className={cn("flex justify-start",
+                        { "underline": pathname.includes(link.href) })}
+                    asChild>
+                    <Link
+                        key={link.name}
+                        to={link.href}
+                    >
+                        <link.icon className="mr-4 h-4 w-4" />
                         {link.name}
                     </Link>
-                )
-            }
+                </Button>
+            )}
         </nav>
-    </aside>
+    </aside >
 }
 

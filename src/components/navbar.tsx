@@ -4,6 +4,22 @@ import { CoffeeIcon, StoreIcon } from "lucide-react"
 import { ThemeToggle } from "./themes/theme-toggle"
 import { useStore } from "@/store"
 
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
+
+
 const LINKS = [
     { name: 'Tienda', href: '/store' },
     { name: 'Dashboard', href: '/dashboard' },
@@ -11,10 +27,8 @@ const LINKS = [
 ]
 
 export function NavBar() {
-    const session = useStore(s => s.session)
-
     return <div className="px-4 py-2 md:py-4 md:px-10">
-        <header className="flex justify-between py-3 items-center max-w-screen-xl mx-auto">
+        <header className="flex justify-between items-center max-w-screen-xl mx-auto">
             <div className="flex gap-2 items-center">
                 <Link to="/" className="group">
                     <CoffeeIcon size={25} className="group-hover:-rotate-12 transition-transform" />
@@ -31,16 +45,73 @@ export function NavBar() {
                     }
                 </nav>
             </div>
-            <div className="flex items-center gap-4">
-                <StoreIcon size={20} />
+            <div className="flex items-center gap-2">
+                <ShoppingCart />
                 <ThemeToggle />
-                {
-                    session
-                        ? <Button size="sm">Iniciar Session</Button>
-                        : <Link to="/auth/login"> <Button size="sm">Crear cuenta</Button> </Link>
-                }
+                <UserDropdown />
             </div>
         </header>
     </div>
 }
 
+
+function UserDropdown() {
+    const session = useStore(s => s.session)
+
+    return <DropdownMenu>
+        <DropdownMenuTrigger>
+            <Avatar className="w-8 h-8 border p-1">
+                <AvatarImage src="src/assets/react.svg" alt="user" />
+                <AvatarFallback>user</AvatarFallback>
+            </Avatar>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+            <DropdownMenuLabel>Tu Cuenta</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+                <Button variant="ghost" className="flex justify-start w-full rounded-[0.5rem]">
+                    <Link to="/user/profile"> Perfil </Link>
+                </Button>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {session
+                ? <DropdownMenuItem asChild>
+                    <Button className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
+                        <Link to="/auth/logout"> Cerrar Session </Link>
+                    </Button>
+                </DropdownMenuItem>
+                : <>
+                    <DropdownMenuItem asChild>
+                        <Button variant="ghost" className="flex justify-start w-full rounded-[0.5rem]">
+                            <Link to="/auth/login"> Iniciar Session </Link>
+                        </Button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                        <Button className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
+                            <Link to="/auth/login"> Crear Cuenta </Link>
+                        </Button>
+                    </DropdownMenuItem>
+                </>
+            }
+        </DropdownMenuContent>
+    </DropdownMenu>
+}
+
+function ShoppingCart() {
+    return <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button size="icon" variant="ghost">
+                <StoreIcon className="w-4 h-4" />
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+            <DropdownMenuLabel>Tu Carrito</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>item1</DropdownMenuItem>
+            <DropdownMenuItem>item1</DropdownMenuItem>
+            <DropdownMenuItem>item1</DropdownMenuItem>
+            <DropdownMenuItem>item1</DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
+
+}
