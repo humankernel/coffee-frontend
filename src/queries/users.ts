@@ -26,6 +26,7 @@ export async function getUser(id: number): Promise<User> {
 }
 
 export async function getUsers(): Promise<User[]> {
+  console.log("dsfdf");
   return api
     .get<User[]>("/users")
     .then(({ data }) => data)

@@ -23,8 +23,8 @@ export function SideBar() {
             </p>
         </Link>
         <nav className="flex flex-col gap-2 mt-10">
-            {LINKS.map(link =>
-                <Button variant="ghost" size="sm"
+            {LINKS.map((link, idx) =>
+                <Button key={idx} variant="ghost" size="sm"
                     className={cn("flex justify-start",
                         { "underline": pathname.includes(link.href) })}
                     asChild>

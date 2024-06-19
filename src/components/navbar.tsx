@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
 import { CoffeeIcon, StoreIcon } from "lucide-react"
 import { ThemeToggle } from "./themes/theme-toggle"
-import { useStore } from "@/store"
+import { useAuthStore } from "@/store"
 
 import {
     DropdownMenu,
@@ -56,7 +56,7 @@ export function NavBar() {
 
 
 function UserDropdown() {
-    const session = useStore(s => s.session)
+    const session = useAuthStore(s => s.session)
 
     return <DropdownMenu>
         <DropdownMenuTrigger>
