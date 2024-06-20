@@ -20,7 +20,7 @@ export const Route = createLazyFileRoute('/dashboard/users')({
 function UsersPage() {
     const { data, error } = useQuery({
         queryKey: ['users'],
-        queryFn: getUsers
+        queryFn: getUsers,
     })
 
     const { mutate } = useMutation({
@@ -28,16 +28,16 @@ function UsersPage() {
         mutationFn: deleteUser
     })
 
-    if (error || !data) throw new Error(error?.message)
+    if (error) throw new Error(error?.message)
 
     const handleDelete = (idxs: number[]) => {
-        for (const idx of idxs) mutate(data[idx].id);
+        for (const idx of idxs) if (data) mutate(data[idx].id);
     }
 
     return <div className="container mx-auto py-4">
         <DataTable
             columns={columns}
-            data={data}
+            data={data ?? []}
             filterBy="username"
             deleteBtn
             InsertBtn={<InsertDialog />}

@@ -113,6 +113,7 @@ export function InsertUserForm() {
                                 onBlur={field.handleBlur}
                                 onChange={(e) => field.handleChange(e.target.value)}
                                 placeholder='****'
+                                type="password"
                             />
                             <FieldInfo field={field} />
                         </div>
