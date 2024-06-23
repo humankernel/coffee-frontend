@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { CoffeeIcon, PercentIcon, UsersIcon } from "lucide-react"
 import { useQuery } from '@tanstack/react-query'
-import { getRecentSales } from '@/queries/sales'
+import { getRecentSales } from '@/api/sales'
 
 export const Route = createLazyFileRoute('/dashboard/')({ component: DashboardPage })
 

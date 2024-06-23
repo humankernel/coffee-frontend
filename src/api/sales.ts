@@ -1,6 +1,6 @@
 import { api } from "@/api";
 import { toast } from "sonner";
-import { User } from "./users";
+import { User } from "@/api/users";
 
 type Sale = {
   id: number;

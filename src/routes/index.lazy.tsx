@@ -33,12 +33,12 @@ function Index() {
 
                 </div>
             </header>
-            <PopularsProducts />
+            <PopularProducts />
         </main>
     )
 }
 
-function PopularsProducts() {
+function PopularProducts() {
     const products = [
         { id: 0, name: "Hot Mocca with Creme", price: 10.00, img: "src/assets/hot drinks.jpg" },
         { id: 1, name: "Hot Mocca with Creme", price: 10.00, img: "src/assets/hot drinks.jpg" },
@@ -49,7 +49,7 @@ function PopularsProducts() {
         <h2 className='text-xl opacity-70 mb-8'>Productos Populares</h2>
         <div className='flex gap-10'>
             {products.map(product =>
-                <Card className='flex flex-row-reverse overflow-hidden max-h-32 hover:brightness-90 transition-all cursor-pointer'>
+                <Card key={product.id} className='flex flex-row-reverse overflow-hidden max-h-32 hover:brightness-90 transition-all cursor-pointer'>
                     <CardHeader className='p-2 pl-4'>
                         <CardTitle className='text-xl'> {product.name} </CardTitle>
                         <CardDescription className='font-semibold text-xl'>${product.price}</CardDescription>

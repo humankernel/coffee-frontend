@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button"
-import { Link } from "@tanstack/react-router"
+import { Link, useLocation } from "@tanstack/react-router"
 import { CoffeeIcon, StoreIcon } from "lucide-react"
 import { ThemeToggle } from "./themes/theme-toggle"
-import { useAuthStore } from "@/store"
 
 import {
     DropdownMenu,
@@ -18,15 +17,14 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
+import { DASHBOARD_LINKS, HOME_LINKS } from "@/constants"
 
+export function Navbar() {
+    const pathname = useLocation({ select: (location) => location.pathname })
+    const LINKS = pathname.includes("/dashboard")
+        ? DASHBOARD_LINKS
+        : HOME_LINKS
 
-const LINKS = [
-    { name: 'Tienda', href: '/store' },
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Sobre Nosotros', href: '/about' },
-]
-
-export function NavBar() {
     return <div className="px-4 py-2 md:py-4 md:px-10">
         <header className="flex justify-between items-center max-w-screen-xl mx-auto">
             <div className="flex gap-2 items-center">
@@ -34,15 +32,13 @@ export function NavBar() {
                     <CoffeeIcon size={25} className="group-hover:-rotate-12 transition-transform" />
                 </Link>
                 <nav className="hidden sm:block">
-                    {
-                        LINKS.map(link =>
-                            <Link to={link.href} key={link.name}>
-                                <Button variant="link" size="sm" className="dark:text-white/60" >
-                                    {link.name}
-                                </Button>
-                            </Link>
-                        )
-                    }
+                    {LINKS.map(link =>
+                        <Link to={link.href} key={link.name}>
+                            <Button variant="link" size="sm" className="dark:text-white/60" >
+                                {link.name}
+                            </Button>
+                        </Link>
+                    )}
                 </nav>
             </div>
             <div className="flex items-center gap-2">
@@ -56,7 +52,7 @@ export function NavBar() {
 
 
 function UserDropdown() {
-    const session = useAuthStore(s => s.session)
+    const session = undefined
 
     return <DropdownMenu>
         <DropdownMenuTrigger>
@@ -66,28 +62,26 @@ function UserDropdown() {
             </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-            <DropdownMenuLabel>Tu Cuenta</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Button variant="ghost" className="flex justify-start w-full rounded-[0.5rem]">
+                <Button size="sm" variant="ghost" className="flex justify-start w-full rounded-[0.5rem] rounded-t-2xl">
                     <Link to="/user/profile"> Perfil </Link>
                 </Button>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {session
                 ? <DropdownMenuItem asChild>
-                    <Button className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
-                        <Link to="/auth/logout"> Cerrar Session </Link>
+                    <Button size="sm" className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
+                        <Link to="/auth/logout"> Cerrar Sesion </Link>
                     </Button>
                 </DropdownMenuItem>
                 : <>
                     <DropdownMenuItem asChild>
-                        <Button variant="ghost" className="flex justify-start w-full rounded-[0.5rem]">
-                            <Link to="/auth/login"> Iniciar Session </Link>
+                        <Button size="sm" variant="ghost" className="flex justify-start w-full rounded-[0.5rem]">
+                            <Link to="/auth/login"> Iniciar Sesion </Link>
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Button className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
+                        <Button size="sm" className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
                             <Link to="/auth/login"> Crear Cuenta </Link>
                         </Button>
                     </DropdownMenuItem>

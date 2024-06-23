@@ -7,6 +7,8 @@ body {
     background-repeat: no-repeat;
     background-position: bottom left;
     background-size: contain;
+    height: 100vh;
+    width: 100vw;
 }
 
 @layer base {

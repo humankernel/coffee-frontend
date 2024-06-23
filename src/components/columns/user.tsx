@@ -11,9 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
-import { User } from '@/queries/users'
-import { useMutation } from "@tanstack/react-query"
-import { api } from "@/api"
+import { User } from '@/api/users'
 import { UpdateUserForm } from "../forms/user"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 

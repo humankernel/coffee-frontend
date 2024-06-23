@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/data-table'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { deleteUser, getUsers } from '@/queries/users'
+import { deleteUser, getUsers } from '@/api/users'
 import { columns } from '@/components/columns/user'
 import {
     Dialog,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { InsertUserForm } from "@/components/forms/user"
+import { PlusIcon } from 'lucide-react'
 
 export const Route = createLazyFileRoute('/dashboard/users')({
     component: UsersPage,
@@ -49,7 +50,9 @@ function UsersPage() {
 function InsertDialog() {
     return <Dialog>
         <DialogTrigger asChild>
-            <Button size="sm">Insertar</Button>
+            <Button size="sm">
+                <PlusIcon className='mr-2 w-4 h-4' /> Añadir
+            </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>

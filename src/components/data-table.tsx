@@ -2,7 +2,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, XIcon } from "lucide-react"
 
 import {
     type ColumnDef,
@@ -77,6 +77,7 @@ export function DataTable<TData, TValue>({
                 </div>
                 {DeleteBtn &&
                     <Button onClick={handleDelete} size="sm" variant="secondary">
+                        <XIcon className="mr-2 w-4 h-4" />
                         Delete
                     </Button>
                 }

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { Product, getProducts } from '@/queries/products'
+import { Product, getProducts } from '@/api/products'
 import { useQuery } from '@tanstack/react-query'
 
 export const Route = createLazyFileRoute('/dashboard/inventory')({

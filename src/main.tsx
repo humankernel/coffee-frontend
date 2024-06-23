@@ -7,6 +7,7 @@ import "./globals.css"
 import { routeTree } from './routeTree.gen'
 import { ThemeProvider } from './components/themes/theme-provider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AuthProvider } from './context/auth-provider'
 
 // Create a new router instance
 const router = createRouter({ routeTree })
@@ -26,7 +27,9 @@ if (!rootElement.innerHTML) {
         <StrictMode>
             <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
                 <QueryClientProvider client={queryClient}>
-                    <RouterProvider router={router} />
+                    <AuthProvider>
+                        <RouterProvider router={router} />
+                    </AuthProvider>
                 </QueryClientProvider>
             </ThemeProvider>
         </StrictMode>,

@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { FieldInfo } from "./field-info"
-import { getUser, insertUser, updateUser } from "@/queries/users"
+import { getUser, insertUser, updateUser } from "@/api/users"
 import { useQuery } from "@tanstack/react-query"
 
 export function InsertUserForm() {
