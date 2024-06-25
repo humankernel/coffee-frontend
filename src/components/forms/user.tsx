@@ -1,23 +1,14 @@
 import { useForm } from "@tanstack/react-form"
 import { zodValidator } from "@tanstack/zod-form-adapter"
-import { z } from "zod"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { FieldInfo } from "./field-info"
-import { getUser, insertUser, updateUser } from "@/api/users"
 import { useQuery } from "@tanstack/react-query"
+import { Button } from "@/components/ui/button"
+import { getUser, insertUser, updateUser } from "@/api/users"
+import { AgeField, NameField, PasswordField, RoleField, UsernameField } from "./fields"
+import { nameValidations, ageValidators, usernameValidators, passwordValidators, roleValidators } from "./validators"
 
 export function InsertUserForm() {
     const form = useForm({
-        defaultValues: { name: '', username: '', password: '', role: '' },
+        defaultValues: { name: '', age: '', username: '', password: '', role: '' },
         onSubmit: async ({ value }) => { return insertUser(value) },
         validatorAdapter: zodValidator
     })
@@ -29,120 +20,47 @@ export function InsertUserForm() {
             form.handleSubmit()
         }} >
             <div className="grid w-full items-center gap-4">
+                {/* NAME */}
                 <form.Field
                     name="name"
-                    validators={{
-                        onChange: z
-                            .string()
-                            .min(3, "Name must be at least 3 characters")
-                            .optional(),
-                        onChangeAsyncDebounceMs: 500,
-                        onChangeAsync: z.string().refine(
-                            async (value) => {
-                                await new Promise((resolve) => setTimeout(resolve, 1000))
-                                return !value.includes('error')
-                            },
-                            { message: "No 'error' allowed in first name", },
-                        ),
-                    }}
-                    children={(field) => {
-                        return (
-                            <>
-                                <div className="flex flex-col space-y-1.5">
-                                    <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Nombre:
-                                    </Label>
-                                    <Input
-                                        id={field.name}
-                                        name={field.name}
-                                        value={field.state.value}
-                                        onBlur={field.handleBlur}
-                                        onChange={(e) => field.handleChange(e.target.value)}
-                                        placeholder='John'
-                                    />
-                                    <FieldInfo field={field} />
-                                </div>
-                            </>
-                        )
-                    }}
-                />
-                <form.Field
-                    name="username"
-                    validators={{
-                        onChange: z
-                            .string()
-                            .min(3, "Username must be at least 3 characters")
-                            .optional(),
-                        onChangeAsyncDebounceMs: 500,
-                        onChangeAsync: z.string().refine(
-                            async (value) => {
-                                await new Promise((resolve) => setTimeout(resolve, 1000))
-                                return !value.includes('error')
-                            },
-                            { message: "No 'error' allowed in first name", },
-                        ),
-                    }}
+                    validators={nameValidations}
                     children={(field) =>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Username:
-                            </Label>
-                            <Input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder='johndoe'
-                            />
-                            <FieldInfo field={field} />
-                        </div>
+                        <NameField field={field} placeholder='John' />
                     }
                 />
+
+                {/* AGE */}
+                <form.Field
+                    name="age"
+                    validators={ageValidators}
+                    children={(field) =>
+                        <AgeField field={field} placeholder='18' />
+                    }
+                />
+
+                {/* USERNAME */}
+                <form.Field
+                    name="username"
+                    validators={usernameValidators}
+                    children={(field) =>
+                        <UsernameField field={field} placeholder='johndoe' />
+                    }
+                />
+
+                {/* PASSWORD */}
                 <form.Field
                     name="password"
-                    children={(field) => (
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Password:
-                            </Label>
-                            <Input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder='****'
-                                type="password"
-                            />
-                            <FieldInfo field={field} />
-                        </div>
-                    )}
+                    validators={passwordValidators}
+                    children={(field) =>
+                        <PasswordField field={field} placeholder='****' />
+                    }
                 />
+
+                {/* ROLE */}
                 <form.Field
                     name="role"
-                    children={(field) => (
-                        <>
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Role:
-                            </Label>
-                            <Select
-                                name={field.name}
-                                value={field.state.value}
-                                onValueChange={(e) => field.handleChange(e)}
-                            >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select Role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="manager">Manager</SelectItem>
-                                    <SelectItem value="almacenero">Almacenero</SelectItem>
-                                    <SelectItem value="supplier">Supplier</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FieldInfo field={field} />
-                        </>
-                    )}
+                    validators={roleValidators}
+                    children={(field) => <RoleField field={field} />}
                 />
             </div>
             <div className="flex mt-10 justify-between">
@@ -168,7 +86,7 @@ export function UpdateUserForm({ id }: { id: number }) {
     })
 
     const form = useForm({
-        defaultValues: { name: "", username: "", password: "", role: "" },
+        defaultValues: { name: "", age: "", username: "", password: "", role: "" },
         onSubmit: async ({ value }) => { return updateUser(id, value) },
         validatorAdapter: zodValidator
     })
@@ -180,116 +98,47 @@ export function UpdateUserForm({ id }: { id: number }) {
             form.handleSubmit()
         }} >
             <div className="grid w-full items-center gap-4">
+                {/* NAME */}
                 <form.Field
                     name="name"
-                    validators={{
-                        onChange: z
-                            .string()
-                            .min(3, "Name must be at least 3 characters")
-                            .optional(),
-                        onChangeAsyncDebounceMs: 500,
-                        onChangeAsync: z.string().refine(
-                            async (value) => {
-                                await new Promise((resolve) => setTimeout(resolve, 1000))
-                                return !value.includes('error')
-                            },
-                            { message: "No 'error' allowed in first name", },
-                        ),
-                    }}
+                    validators={nameValidations}
                     children={(field) =>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Nombre:
-                            </Label>
-                            <Input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder={data?.name}
-                            />
-                            <FieldInfo field={field} />
-                        </div>
+                        <NameField field={field} placeholder={data?.name ?? 'John'} />
                     }
                 />
+
+                {/* AGE */}
+                <form.Field
+                    name="age"
+                    validators={ageValidators}
+                    children={(field) =>
+                        <AgeField field={field} placeholder={data?.age.toString() ?? '18'} />
+                    }
+                />
+
+                {/* USERNAME */}
                 <form.Field
                     name="username"
-                    validators={{
-                        onChange: z
-                            .string()
-                            .min(3, "Username must be at least 3 characters")
-                            .optional(),
-                        onChangeAsyncDebounceMs: 500,
-                        onChangeAsync: z.string().refine(
-                            async (value) => {
-                                await new Promise((resolve) => setTimeout(resolve, 1000))
-                                return !value.includes('error')
-                            },
-                            { message: "No 'error' allowed in first name", },
-                        ),
-                    }}
+                    validators={usernameValidators}
                     children={(field) =>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Username:
-                            </Label>
-                            <Input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder={data?.username}
-                            />
-                            <FieldInfo field={field} />
-                        </div>
+                        <UsernameField field={field} placeholder={data?.username ?? 'johndoe'} />
                     }
                 />
+
+                {/* PASSWORD */}
                 <form.Field
                     name="password"
-                    children={(field) => (
-                        <>
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Password:
-                            </Label>
-                            <Input
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                onChange={(e) => field.handleChange(e.target.value)}
-                                placeholder={data?.password}
-                                type="password"
-                            />
-                            <FieldInfo field={field} />
-                        </>
-                    )}
+                    validators={passwordValidators}
+                    children={(field) =>
+                        <PasswordField field={field} placeholder='****' />
+                    }
                 />
+
+                {/* ROLE */}
                 <form.Field
                     name="role"
-                    children={(field) => (
-                        <>
-                            <Label htmlFor={field.name} className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Role:
-                            </Label>
-                            <Select
-                                name={field.name}
-                                value={field.state.value}
-                                onValueChange={(e) => field.handleChange(e)}
-                            >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select Role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="manager">Manager</SelectItem>
-                                    <SelectItem value="almacenero">Almacenero</SelectItem>
-                                    <SelectItem value="supplier">Supplier</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FieldInfo field={field} />
-                        </>
-                    )}
+                    validators={roleValidators}
+                    children={(field) => <RoleField field={field} />}
                 />
             </div>
             <div className="flex mt-10 justify-between">
@@ -306,3 +155,6 @@ export function UpdateUserForm({ id }: { id: number }) {
         </form >
     )
 }
+
+
+

@@ -3,25 +3,14 @@ import { createContext, useContext, useEffect, useLayoutEffect, useState } from 
 
 const AuthContext = createContext(undefined)
 
-
-export function useAuth() {
-    const authContext = useContext(AuthContext)
-
-    if (!authContext) {
-        throw new Error("useAuth must be used within a AuthProvider")
-    }
-
-    return authContext
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [token, setToken] = useState()
 
     useEffect(() => {
         const fetchMe = async () => {
             try {
-                const res = await api.get("/auth/me")
-                setToken(res.data.accessToken)
+                const { data } = await api.get("/auth/me")
+                setToken(data.accessToken)
             } catch {
                 setToken(null)
             }
@@ -81,4 +70,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return <AuthContext.Provider value={token}>
         {children}
     </AuthContext.Provider>
+}
+
+export function useAuth() {
+    const authContext = useContext(AuthContext)
+
+    if (!authContext) {
+        throw new Error("useAuth must be used within a AuthProvider")
+    }
+
+    return authContext
 }

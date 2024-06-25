@@ -2,7 +2,14 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { SearchIcon, XIcon } from "lucide-react"
+import { SearchIcon, PlusIcon, XIcon } from "lucide-react"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
 import {
     type ColumnDef,
@@ -22,18 +29,16 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     filterBy: keyof TData
-    deleteBtn: boolean
-    InsertBtn: React.ReactNode
-    onDelete: (idxs: number[]) => void;
+    onDelete?: (idxs: number[]) => void;
+    insertForm?: React.ReactNode
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
     filterBy,
-    deleteBtn: DeleteBtn,
-    InsertBtn,
-    onDelete
+    onDelete,
+    insertForm
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -54,7 +59,7 @@ export function DataTable<TData, TValue>({
 
     const handleDelete = () => {
         const idxs = Object.keys(rowSelection).map(Number)
-        onDelete(idxs);
+        if (onDelete) onDelete(idxs);
     }
 
     return (
@@ -75,13 +80,13 @@ export function DataTable<TData, TValue>({
                     {table.getFilteredSelectedRowModel().rows.length} de{" "}
                     {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
                 </div>
-                {DeleteBtn &&
+                {onDelete &&
                     <Button onClick={handleDelete} size="sm" variant="secondary">
                         <XIcon className="mr-2 w-4 h-4" />
                         Delete
                     </Button>
                 }
-                {InsertBtn}
+                <InsertDialog form={insertForm} />
             </div>
             <Table>
                 <TableHeader>
@@ -148,3 +153,20 @@ export function DataTable<TData, TValue>({
 }
 
 
+function InsertDialog({ form }: { form: React.ReactNode }) {
+    return <Dialog>
+        <DialogTrigger asChild>
+            <Button size="sm">
+                <PlusIcon className='mr-2 w-4 h-4' /> Añadir
+            </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+                <DialogTitle>Insertar //name//</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                {form}
+            </div>
+        </DialogContent>
+    </Dialog>
+}

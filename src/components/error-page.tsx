@@ -17,7 +17,7 @@ export function ErrorPage({ error, reset }: ErrorProps) {
                 <p className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">
                     {error instanceof Error ? error.message : "Hay un error."}
                 </p>
-                <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Quieres intentarlo de nuevo? </p>
+                <p className="mb-4 mt-10 text-lg text-left font-light text-gray-500 dark:text-gray-400">Quieres intentarlo de nuevo? </p>
 
                 <div className="flex gap-2">
                     <Button size="sm" onClick={reset} asChild>
