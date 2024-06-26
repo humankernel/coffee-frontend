@@ -15,6 +15,13 @@ export const nameValidations = {
     ),
 }
 
+export const descValidations = {
+    onChange: z
+        .string()
+        .optional(),
+    onChangeAsyncDebounceMs: 500,
+}
+
 export const ageValidators = {
     onChange: z
         .coerce
@@ -32,6 +39,18 @@ export const ageValidators = {
     ),
 }
 
+export const priceValidators = {
+    onChange: z
+        .coerce
+        .number()
+        .gte(0, "El precio debe ser mayor que 0")
+        .lte(200, "El precio debe ser menor que 200")
+    ,
+    onChangeAsyncDebounceMs: 500,
+}
+
+
+
 export const usernameValidators = {
     onChange: z
         .string()
@@ -40,9 +59,9 @@ export const usernameValidators = {
     onChangeAsync: z.string().refine(
         async (value) => {
             await new Promise((resolve) => setTimeout(resolve, 1000))
-            return !value.includes('error')
+            return !value.includes("error")
         },
-        { message: "No 'error' allowed in first name", },
+        { message: "'error' no esta permitido en el nombre de usuario", },
     ),
 }
 
@@ -80,10 +99,6 @@ export const passwordValidators = {
 export const roleValidators = {
     onChange: z.nativeEnum(Role),
     onChangeAsyncDebounceMs: 500,
-    onChangeAsync: z.nativeEnum(Role).refine(
-        async (value) => { await new Promise((resolve) => setTimeout(resolve, 1000)) },
-        { message: "", },
-    ),
 }
 
 

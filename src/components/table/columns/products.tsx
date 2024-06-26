@@ -1,3 +1,4 @@
+import type { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -8,14 +9,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { User } from '@/api/users'
-import { UpdateUserForm } from "../forms/user"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
+import { Product } from '@/api/products'
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Product>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -43,26 +40,37 @@ export const columns: ColumnDef<User>[] = [
         header: "id"
     },
     {
-        accessorKey: "username",
+        accessorKey: "name",
         header: ({ column }) =>
             <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Usuario
+                Nombre
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
     },
     {
-        accessorKey: "name",
-        header: "Nombre",
+        accessorKey: "desc",
+        header: "Descripcion",
     },
     {
-        accessorKey: "role",
-        header: "Rol",
-        cell: ({ row }) =>
-            <Badge>{row.original.role}</Badge>
+        accessorKey: "price",
+        header: "Precio",
+        cell: ({ row }) => {
+            const amount = parseFloat(row.getValue("price"))
+            const formatted = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            }).format(amount)
+
+            return <div>{formatted}</div>
+        }
+    },
+    {
+        accessorKey: "type",
+        header: "Tipo",
     },
     {
         accessorKey: "acciones",
@@ -82,26 +90,7 @@ export const columns: ColumnDef<User>[] = [
                     >
                         Copiar ID
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                        <UpdateDialog id={row.original.id} />
-                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
     }
 ]
-
-function UpdateDialog({ id }: { id: number }) {
-    return <Dialog>
-        <DialogTrigger>
-            Actualizar
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle>Actualizar Usuario</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-                <UpdateUserForm id={id} />
-            </div>
-        </DialogContent>
-    </Dialog>
-}

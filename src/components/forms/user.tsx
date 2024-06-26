@@ -1,15 +1,23 @@
 import { useForm } from "@tanstack/react-form"
 import { zodValidator } from "@tanstack/zod-form-adapter"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { getUser, insertUser, updateUser } from "@/api/users"
-import { AgeField, NameField, PasswordField, RoleField, UsernameField } from "./fields"
-import { nameValidations, ageValidators, usernameValidators, passwordValidators, roleValidators } from "./validators"
+import { AgeField, NameField, PasswordField, RoleField, UsernameField } from "@/components/forms/fields"
+import { nameValidations, ageValidators, usernameValidators, passwordValidators, roleValidators } from "@/components/forms/validators"
+import { toast } from "sonner"
 
 export function InsertUserForm() {
+    const { mutateAsync } = useMutation({
+        mutationKey: ['insert-user'],
+        mutationFn: insertUser,
+        onSuccess: () => toast.success("Usuario insertado correctamente"),
+        onError: () => toast.error("Error al insertar el usuario")
+    })
+
     const form = useForm({
         defaultValues: { name: '', age: '', username: '', password: '', role: '' },
-        onSubmit: async ({ value }) => { return insertUser(value) },
+        onSubmit: async ({ value }) => { return mutateAsync(value) },
         validatorAdapter: zodValidator
     })
 
@@ -85,9 +93,16 @@ export function UpdateUserForm({ id }: { id: number }) {
         queryFn: async () => getUser(id)
     })
 
+    const { mutateAsync } = useMutation({
+        mutationKey: [id, 'update-user'],
+        mutationFn: (value: any) => updateUser(id, value),
+        onSuccess: () => toast.success("Usuario actualizado correctamente"),
+        onError: () => toast.error("Error al actualizar el usuario")
+    })
+
     const form = useForm({
         defaultValues: { name: "", age: "", username: "", password: "", role: "" },
-        onSubmit: async ({ value }) => { return updateUser(id, value) },
+        onSubmit: async ({ value }) => { return mutateAsync(value) },
         validatorAdapter: zodValidator
     })
 
@@ -112,7 +127,7 @@ export function UpdateUserForm({ id }: { id: number }) {
                     name="age"
                     validators={ageValidators}
                     children={(field) =>
-                        <AgeField field={field} placeholder={data?.age.toString() ?? '18'} />
+                        <AgeField field={field} placeholder={data?.age?.toString() ?? '18'} />
                     }
                 />
 

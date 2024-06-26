@@ -37,33 +37,15 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function insertUser(user: Omit<User, "id">): Promise<User> {
-  return api
-    .post<User>("/users", user)
-    .then(({ data }) => {
-      toast("Usuario insertado correctamente");
-      return data;
-    })
-    .catch((error) => {
-      toast.error("Error al insertar el usuario");
-      console.error(error);
-    });
+  console.log(user);
+  return api.post<User>("/users", user);
 }
 
 export async function updateUser(
   id: number,
   user: Partial<User>,
 ): Promise<User> {
-  console.log({ user });
-  return api
-    .patch<User>(`/users/${id}`, user)
-    .then(({ data }) => {
-      toast("Usuario actualizado correctamente");
-      return data;
-    })
-    .catch((error) => {
-      toast.error("Error al actualizar el usuario");
-      console.error(error);
-    });
+  return api.patch<User>(`/users/${id}`, user);
 }
 
 export async function deleteUser(id: number): Promise<User> {

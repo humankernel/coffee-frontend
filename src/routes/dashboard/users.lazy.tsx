@@ -1,9 +1,9 @@
-import { DataTable } from '@/components/data-table'
+import { DataTable } from '@/components/table/data-table'
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { deleteUser, getUsers } from '@/api/users'
-import { columns } from '@/components/columns/user'
 import { InsertUserForm } from '@/components/forms/user'
+import { columns } from '@/components/table/columns/user'
 
 export const Route = createLazyFileRoute('/dashboard/users')({
     component: UsersPage,
@@ -17,15 +17,11 @@ function UsersPage() {
         queryFn: getUsers,
     })
 
-    const { mutate: mutateDelete } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: ['delete-users'],
         mutationFn: deleteUser,
         onSuccess: () => navigate({ to: "/dashboard/users", replace: true })
     })
-
-    const handleDelete = (idxs: number[]) => {
-        for (const idx of idxs) if (data) mutateDelete(data[idx].id);
-    }
 
     return <div className="container mx-auto py-4">
         <DataTable
@@ -33,7 +29,7 @@ function UsersPage() {
             data={data ?? []}
             filterBy="username"
             insertForm={<InsertUserForm />}
-            onDelete={handleDelete}
+            onDelete={mutate}
         />
     </div>
 }

@@ -10,6 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { Card } from "@/components/ui/card"
 
 import {
     type ColumnDef,
@@ -23,13 +24,12 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { useState } from "react"
-import { Card } from "./ui/card"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     filterBy: keyof TData
-    onDelete?: (idxs: number[]) => void;
+    onDelete?: (id: number) => void;
     insertForm?: React.ReactNode
 }
 
@@ -59,7 +59,9 @@ export function DataTable<TData, TValue>({
 
     const handleDelete = () => {
         const idxs = Object.keys(rowSelection).map(Number)
-        if (onDelete) onDelete(idxs);
+
+        if (onDelete)
+            for (const idx of idxs) if (data) onDelete(data[idx].id);
     }
 
     return (
@@ -83,7 +85,7 @@ export function DataTable<TData, TValue>({
                 {onDelete &&
                     <Button onClick={handleDelete} size="sm" variant="secondary">
                         <XIcon className="mr-2 w-4 h-4" />
-                        Delete
+                        Eliminar
                     </Button>
                 }
                 <InsertDialog form={insertForm} />

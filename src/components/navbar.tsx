@@ -18,6 +18,7 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar"
 import { DASHBOARD_LINKS, HOME_LINKS } from "@/constants"
+import { cn } from "@/lib/utils"
 
 export function Navbar() {
     const pathname = useLocation({ select: (location) => location.pathname })
@@ -34,7 +35,13 @@ export function Navbar() {
                 <nav className="hidden sm:block">
                     {LINKS.map(link =>
                         <Link to={link.href} key={link.name}>
-                            <Button variant="link" size="sm" className="dark:text-white/60" >
+                            <Button
+                                variant="link"
+                                size="sm"
+                                className={cn("dark:text-white/60",
+                                    { "underline": pathname.includes(link.href) }
+                                )}
+                            >
                                 {link.name}
                             </Button>
                         </Link>
@@ -46,8 +53,8 @@ export function Navbar() {
                 <ThemeToggle />
                 <UserDropdown />
             </div>
-        </header>
-    </div>
+        </header >
+    </div >
 }
 
 

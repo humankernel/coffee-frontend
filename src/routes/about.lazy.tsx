@@ -1,3 +1,4 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { createLazyFileRoute } from '@tanstack/react-router'
 
 export const Route = createLazyFileRoute('/about')({
@@ -5,6 +6,8 @@ export const Route = createLazyFileRoute('/about')({
 })
 
 function About() {
-    return <div className="p-2">Hello from About!</div>
+    return <div className="p-2">
+        Hello from About!
+    </div>
 }
 
