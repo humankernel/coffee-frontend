@@ -3,9 +3,10 @@
 ## TODO
 
 - [ ] partial update
-- [ ] page reload on mutation
+- [x] page reload on mutation
 - [ ] advanced insert form (products form)
 - [ ] product imgs
+- [ ] remove onSuccess in favor of useEffect
 
 - [ ] Store
 - [ ] Shopping Cart

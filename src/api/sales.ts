@@ -1,5 +1,4 @@
 import { api } from "@/api";
-import { toast } from "sonner";
 import { User } from "@/api/users";
 
 type Sale = {
@@ -9,11 +8,6 @@ type Sale = {
 };
 
 export async function getRecentSales(): Promise<Sale[]> {
-  return api
-    .get<Sale>(`/sales`)
-    .then(({ data }) => data)
-    .catch((error) => {
-      toast.error("Error to fetch recent sales");
-      console.error(error);
-    });
+  const { data } = await api.get<Sale[]>(`/sales`);
+  return data;
 }

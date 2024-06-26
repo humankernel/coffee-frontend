@@ -2,7 +2,6 @@ import { ErrorPage } from '@/components/error-page'
 import { Navbar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/sonner'
 import { createRootRoute, Outlet, useLocation } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
 export const Route = createRootRoute({
     component: RootLayout,
@@ -16,6 +15,5 @@ function RootLayout() {
         {!pathname.includes("/auth") && <Navbar />}
         <Outlet />
         <Toaster />
-        <TanStackRouterDevtools />
     </div>
 }

@@ -11,6 +11,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Product } from '@/api/products'
+import { UpdateProductForm } from "@/components/forms/product"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export const columns: ColumnDef<Product>[] = [
     {
@@ -90,7 +92,26 @@ export const columns: ColumnDef<Product>[] = [
                     >
                         Copiar ID
                     </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={e => e.preventDefault()}>
+                        <UpdateDialog id={row.original.id} />
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
     }
 ]
+
+function UpdateDialog({ id }: { id: number }) {
+    return <Dialog>
+        <DialogTrigger>
+            Actualizar
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+                <DialogTitle>Actualizar Producto</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                <UpdateProductForm id={id} />
+            </div>
+        </DialogContent>
+    </Dialog>
+}

@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import { api } from "@/api";
 
 export enum Role {
@@ -18,45 +17,29 @@ export type User = {
 };
 
 export async function getUser(id: number): Promise<User> {
-  return api
-    .get<User>(`/users/${id}`)
-    .then(({ data }) => data)
-    .catch((error) => {
-      console.error(error);
-    });
+  const { data } = await api.get<User>(`/users/${id}`);
+  return data;
 }
 
 export async function getUsers(): Promise<User[]> {
-  return api
-    .get<User[]>("/users")
-    .then(({ data }) => data)
-    .catch((error) => {
-      toast.error("Error al obtener los usuarios");
-      console.error(error);
-    });
+  const { data } = await api.get<User[]>("/users");
+  return data;
 }
 
 export async function insertUser(user: Omit<User, "id">): Promise<User> {
-  console.log(user);
-  return api.post<User>("/users", user);
+  const { data } = await api.post<User>("/users", user);
+  return data;
 }
 
 export async function updateUser(
   id: number,
   user: Partial<User>,
 ): Promise<User> {
-  return api.patch<User>(`/users/${id}`, user);
+  const { data } = await api.patch<User>(`/users/${id}`, user);
+  return data;
 }
 
 export async function deleteUser(id: number): Promise<User> {
-  return api
-    .delete<User>(`/users/${id}`)
-    .then(({ data }) => {
-      toast("Usuario eliminado correctamente");
-      return data;
-    })
-    .catch((error) => {
-      toast.error("Error al eliminar el usuario");
-      console.error(error);
-    });
+  const { data } = await api.delete<User>(`/users/${id}`);
+  return data;
 }

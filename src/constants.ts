@@ -1,6 +1,6 @@
 import { LinkItem } from "@/types";
 
-export const API_BASE = "http://localhost:3000/";
+export const API_BASE = "http://172.25.104.156:3001";
 
 export const HOME_LINKS: LinkItem[] = [
   { name: "Tienda", href: "/store" },

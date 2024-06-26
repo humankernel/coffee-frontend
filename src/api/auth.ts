@@ -19,7 +19,7 @@ type RegisterParams = z.infer<typeof registerSchema>;
 export async function login(loginData: LoginParams) {
   try {
     const { data } = await api.post<LoginRes>("/auth/login", loginData);
-    if (!data) throw new Error("Error while registing user");
+    if (!data) throw new Error("Error while login user");
 
     console.log(data);
   } catch (error) {}

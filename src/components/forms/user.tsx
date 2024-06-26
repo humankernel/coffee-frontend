@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form"
 import { zodValidator } from "@tanstack/zod-form-adapter"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { getUser, insertUser, updateUser } from "@/api/users"
 import { AgeField, NameField, PasswordField, RoleField, UsernameField } from "@/components/forms/fields"
@@ -8,10 +8,15 @@ import { nameValidations, ageValidators, usernameValidators, passwordValidators,
 import { toast } from "sonner"
 
 export function InsertUserForm() {
+    const queryClient = useQueryClient();
+
     const { mutateAsync } = useMutation({
         mutationKey: ['insert-user'],
         mutationFn: insertUser,
-        onSuccess: () => toast.success("Usuario insertado correctamente"),
+        onSuccess: () => {
+            toast.success("Usuario insertado correctamente")
+            queryClient.invalidateQueries({ queryKey: ["users"] })
+        },
         onError: () => toast.error("Error al insertar el usuario")
     })
 
@@ -88,6 +93,8 @@ export function InsertUserForm() {
 
 
 export function UpdateUserForm({ id }: { id: number }) {
+    const queryClient = useQueryClient()
+
     const { data } = useQuery({
         queryKey: [id, 'user'],
         queryFn: async () => getUser(id)
@@ -96,7 +103,10 @@ export function UpdateUserForm({ id }: { id: number }) {
     const { mutateAsync } = useMutation({
         mutationKey: [id, 'update-user'],
         mutationFn: (value: any) => updateUser(id, value),
-        onSuccess: () => toast.success("Usuario actualizado correctamente"),
+        onSuccess: () => {
+            toast.success("Usuario actualizado correctamente")
+            queryClient.invalidateQueries({ queryKey: ["users"] })
+        },
         onError: () => toast.error("Error al actualizar el usuario")
     })
 

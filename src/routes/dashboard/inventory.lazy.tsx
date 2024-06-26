@@ -1,17 +1,18 @@
 import { DataTable } from '@/components/table/data-table'
-import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
+import { createLazyFileRoute } from '@tanstack/react-router'
 
 import { deleteProduct, getProducts } from '@/api/products'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { InsertProductForm } from '@/components/forms/product'
 import { columns } from '@/components/table/columns/products'
+import { toast } from 'sonner'
 
 export const Route = createLazyFileRoute('/dashboard/inventory')({
     component: InventoryPage
 })
 
 function InventoryPage() {
-    const navigate = useNavigate();
+    const queryClient = useQueryClient()
 
     const { data } = useQuery({
         queryKey: ['products'],
@@ -21,7 +22,11 @@ function InventoryPage() {
     const { mutate } = useMutation({
         mutationKey: ['delete-product'],
         mutationFn: deleteProduct,
-        onSuccess: () => navigate({ to: "/dashboard/inventory", replace: true })
+        onSuccess: () => {
+            toast.success("Producto correctamente eliminado")
+            queryClient.invalidateQueries({ queryKey: ["products"] })
+        },
+        onError: () => toast.error("Error al eliminar el producto")
     })
 
     return <div className="container mx-auto py-4">

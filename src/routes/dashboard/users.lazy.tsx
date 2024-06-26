@@ -1,26 +1,32 @@
 import { DataTable } from '@/components/table/data-table'
-import { createLazyFileRoute, useNavigate } from '@tanstack/react-router'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { createLazyFileRoute } from '@tanstack/react-router'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { deleteUser, getUsers } from '@/api/users'
 import { InsertUserForm } from '@/components/forms/user'
 import { columns } from '@/components/table/columns/user'
+import { toast } from 'sonner'
 
 export const Route = createLazyFileRoute('/dashboard/users')({
     component: UsersPage,
 })
 
 function UsersPage() {
-    const navigate = useNavigate();
+    const queryClient = useQueryClient()
 
     const { data } = useQuery({
         queryKey: ['users'],
         queryFn: getUsers,
     })
 
+    console.log(data)
     const { mutate } = useMutation({
         mutationKey: ['delete-users'],
         mutationFn: deleteUser,
-        onSuccess: () => navigate({ to: "/dashboard/users", replace: true })
+        onSuccess: () => {
+            toast.success("Usuario correctamente eliminado")
+            queryClient.invalidateQueries({ queryKey: ["users"] })
+        },
+        onError: () => toast.error("Error al eliminar el usuario")
     })
 
     return <div className="container mx-auto py-4">

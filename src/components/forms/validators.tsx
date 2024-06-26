@@ -1,3 +1,4 @@
+import { Size, Temp } from "@/api/products"
 import { Role } from "@/api/users"
 import { z } from "zod"
 
@@ -18,7 +19,7 @@ export const nameValidations = {
 export const descValidations = {
     onChange: z
         .string()
-        .optional(),
+        .min(1),
     onChangeAsyncDebounceMs: 500,
 }
 
@@ -102,3 +103,36 @@ export const roleValidators = {
 }
 
 
+export const foodTypeValidators = {
+    onChange: z.string().min(3),
+    onChangeAsyncDebounceMs: 500,
+}
+
+export const ingredientsValidators = {
+    onChange: z
+        .string()
+        .transform(value => value.split(','))
+        .pipe(z.string().array()),
+    onChangeAsyncDebounceMs: 500,
+}
+
+export const sizeValidators = {
+    onChange: z.nativeEnum(Size),
+    onChangeAsyncDebounceMs: 500,
+}
+
+// FIX:
+export const sugarValidators = {
+    onChange: z.string(),
+    onChangeAsyncDebounceMs: 500,
+}
+
+export const tempValidators = {
+    onChange: z.nativeEnum(Temp),
+    onChangeAsyncDebounceMs: 500,
+}
+
+export const drinkValidators = {
+    onChange: z.string().min(3),
+    onChangeAsyncDebounceMs: 500,
+}
