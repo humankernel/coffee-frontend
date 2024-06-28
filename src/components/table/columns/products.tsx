@@ -1,4 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table"
+import { Product } from '@/api/products'
+import { UpdateProductForm } from "@/components/forms/product"
+// shadcn
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -9,10 +12,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Checkbox } from "@/components/ui/checkbox"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { Product } from '@/api/products'
-import { UpdateProductForm } from "@/components/forms/product"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+
 
 export const columns: ColumnDef<Product>[] = [
     {

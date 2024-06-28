@@ -12,6 +12,10 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { type FieldApi } from "@tanstack/react-form"
 import { FieldInfo } from "@/lib/utils"
+import { DollarSignIcon, IceCreamConeIcon } from "lucide-react"
+import { useState } from "react"
+import { MultiSelect } from "../ui/multi-select"
+import { INGREDIENTS } from "@/constants"
 
 type FieldParams = { field: FieldApi<any, any, any, any>, placeholder: string }
 
@@ -115,14 +119,18 @@ export function DescField({ field, placeholder }: FieldParams) {
 export function PriceField({ field, placeholder }: FieldParams) {
     return <div className="grid gap-2">
         <Label htmlFor={field.name}> Price </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            type="number"
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
+        <div className="relative" >
+            <DollarSignIcon className="mr-2 h-4 w-4 absolute top-3 left-2 opacity-60" />
+            <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                type="number"
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={placeholder}
+                className="pl-6"
+            />
+        </div>
         <FieldInfo field={field} />
     </div>
 }
@@ -141,9 +149,37 @@ export function FoodTypeField({ field, placeholder }: FieldParams) {
     </div>
 }
 
+function Emoji({ emoji }: { emoji: string }) {
+    return <div>
+        {emoji}
+    </div>
+}
+
 export function IngredientsField({ field, placeholder }: FieldParams) {
+    const [selected, setSelected] = useState<string[]>([]);
+
     return <div className="grid gap-2">
         <Label htmlFor={field.name}> Ingredientes </Label>
+        <MultiSelect
+            options={INGREDIENTS.map(ingredient => ({
+                ...ingredient,
+                icon: <Emoji emoji={ingredient.icon} />
+            }))}
+            onValueChange={setSelected}
+            defaultValue={selected}
+            placeholder="Selecciona los Ingredientes"
+            variant="inverted"
+            animation={2}
+            maxCount={3}
+        />
+        <div className="mt-4">
+            <h2 className="text-xl font-semibold">Ingredientes Seleccionados:</h2>
+            <ul className="list-disc list-inside">
+                {selected.map((ingredient) => (
+                    <li key={ingredient}>{ingredient}</li>
+                ))}
+            </ul>
+        </div>
         <Input
             id={field.name}
             name={field.name}

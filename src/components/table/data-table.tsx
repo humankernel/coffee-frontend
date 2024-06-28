@@ -162,7 +162,7 @@ function InsertDialog({ form }: { form: React.ReactNode }) {
                 <PlusIcon className='mr-2 w-4 h-4' /> Añadir
             </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] p-4">
             <DialogHeader>
                 <DialogTitle>Insertar //name//</DialogTitle>
             </DialogHeader>

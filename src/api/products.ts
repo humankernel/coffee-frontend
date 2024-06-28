@@ -60,7 +60,6 @@ export async function insertProduct(
   if (product.type === "food") {
     product = {
       ...product,
-      food_type: product.foodType,
       ingredients: product.ingredients.split(","),
     };
     const { data } = await api.post("/products/food", product);
@@ -70,7 +69,7 @@ export async function insertProduct(
   if (product.type === "drink") {
     product = {
       ...product,
-      drink_type: product.drinkType,
+      sugar: true,
     };
 
     const { data } = await api.post("/products/drink", product);
@@ -88,4 +87,30 @@ export async function insertProduct(
 export async function getProduct(id: number): Promise<Product> {
   const { data } = await api.get<Product>(`/products/${id}`);
   return data;
+}
+
+export async function updateProduct(
+  id: number,
+  product: Partial<Product>,
+): Promise<Product> {
+  product = {
+    ...product,
+    price: Number(product.price),
+  };
+  console.log(product);
+  if (product.type === ProductType.food) {
+    const { data } = await api.patch<Product>(`/products/food/${id}`, product);
+    return data;
+  } else if (product.type === ProductType.drink) {
+    product = {
+      ...product,
+      sugar: false,
+    };
+    console.log(product);
+    const { data } = await api.patch<Product>(`/products/drink/${id}`, product);
+    return data;
+  } else if (product.type === ProductType.raw) {
+    const { data } = await api.patch<Product>(`/products/raw/${id}`, product);
+    return data;
+  }
 }
