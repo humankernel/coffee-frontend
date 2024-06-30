@@ -3,7 +3,6 @@ import { useForm } from '@tanstack/react-form'
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { Button } from '@/components/ui/button'
 import { register } from '@/api/auth'
-
 import { AgeField, NameField, PasswordField, UsernameField } from "@/components/forms/fields"
 import { nameValidations, ageValidators, usernameValidators, passwordValidators } from "@/components/forms/validators"
 

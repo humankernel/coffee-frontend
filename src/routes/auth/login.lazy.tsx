@@ -1,9 +1,8 @@
 import { Link, createLazyFileRoute } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { zodValidator } from '@tanstack/zod-form-adapter'
-import { Button } from '@/components/ui/button'
 import { login } from '@/api/auth'
-
+import { Button } from '@/components/ui/button'
 import { PasswordField, UsernameField } from "@/components/forms/fields"
 import { usernameValidators, passwordValidators } from "@/components/forms/validators"
 

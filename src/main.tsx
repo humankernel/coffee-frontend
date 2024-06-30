@@ -15,7 +15,7 @@ declare module '@tanstack/react-router' {
     interface Register { router: typeof router }
 }
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 // devtools
 const TanStackRouterDevtools =

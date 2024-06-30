@@ -13,14 +13,14 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as StoreIndexImport } from './routes/store/index'
+import { Route as StoreProductIdImport } from './routes/store/$productId'
 
 // Create Virtual Routes
 
-const StoreLazyImport = createFileRoute('/store')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const DashboardIndexLazyImport = createFileRoute('/dashboard/')()
-const UserProfileLazyImport = createFileRoute('/user/profile')()
 const DashboardUsersLazyImport = createFileRoute('/dashboard/users')()
 const DashboardSuppliersLazyImport = createFileRoute('/dashboard/suppliers')()
 const DashboardQsLazyImport = createFileRoute('/dashboard/qs')()
@@ -30,11 +30,6 @@ const AuthRegisterLazyImport = createFileRoute('/auth/register')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
 
 // Create/Update Routes
-
-const StoreLazyRoute = StoreLazyImport.update({
-  path: '/store',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/store.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
@@ -53,10 +48,10 @@ const DashboardIndexLazyRoute = DashboardIndexLazyImport.update({
   import('./routes/dashboard/index.lazy').then((d) => d.Route),
 )
 
-const UserProfileLazyRoute = UserProfileLazyImport.update({
-  path: '/user/profile',
+const StoreIndexRoute = StoreIndexImport.update({
+  path: '/store/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/user/profile.lazy').then((d) => d.Route))
+} as any)
 
 const DashboardUsersLazyRoute = DashboardUsersLazyImport.update({
   path: '/dashboard/users',
@@ -101,6 +96,11 @@ const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
 
+const StoreProductIdRoute = StoreProductIdImport.update({
+  path: '/store/$productId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -119,11 +119,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
-    '/store': {
-      id: '/store'
-      path: '/store'
-      fullPath: '/store'
-      preLoaderRoute: typeof StoreLazyImport
+    '/store/$productId': {
+      id: '/store/$productId'
+      path: '/store/$productId'
+      fullPath: '/store/$productId'
+      preLoaderRoute: typeof StoreProductIdImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -175,11 +175,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardUsersLazyImport
       parentRoute: typeof rootRoute
     }
-    '/user/profile': {
-      id: '/user/profile'
-      path: '/user/profile'
-      fullPath: '/user/profile'
-      preLoaderRoute: typeof UserProfileLazyImport
+    '/store/': {
+      id: '/store/'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof StoreIndexImport
       parentRoute: typeof rootRoute
     }
     '/dashboard/': {
@@ -197,7 +197,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   AboutLazyRoute,
-  StoreLazyRoute,
+  StoreProductIdRoute,
   AuthLoginLazyRoute,
   AuthRegisterLazyRoute,
   DashboardInventoryLazyRoute,
@@ -205,7 +205,7 @@ export const routeTree = rootRoute.addChildren({
   DashboardQsLazyRoute,
   DashboardSuppliersLazyRoute,
   DashboardUsersLazyRoute,
-  UserProfileLazyRoute,
+  StoreIndexRoute,
   DashboardIndexLazyRoute,
 })
 
@@ -219,7 +219,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/about",
-        "/store",
+        "/store/$productId",
         "/auth/login",
         "/auth/register",
         "/dashboard/inventory",
@@ -227,7 +227,7 @@ export const routeTree = rootRoute.addChildren({
         "/dashboard/qs",
         "/dashboard/suppliers",
         "/dashboard/users",
-        "/user/profile",
+        "/store/",
         "/dashboard/"
       ]
     },
@@ -237,8 +237,8 @@ export const routeTree = rootRoute.addChildren({
     "/about": {
       "filePath": "about.lazy.tsx"
     },
-    "/store": {
-      "filePath": "store.lazy.tsx"
+    "/store/$productId": {
+      "filePath": "store/$productId.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.lazy.tsx"
@@ -261,8 +261,8 @@ export const routeTree = rootRoute.addChildren({
     "/dashboard/users": {
       "filePath": "dashboard/users.lazy.tsx"
     },
-    "/user/profile": {
-      "filePath": "user/profile.lazy.tsx"
+    "/store/": {
+      "filePath": "store/index.tsx"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.lazy.tsx"

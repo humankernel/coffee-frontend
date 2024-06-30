@@ -1,8 +1,9 @@
-import { Button } from "@/components/ui/button"
 import { Link, useLocation } from "@tanstack/react-router"
 import { CoffeeIcon, StoreIcon } from "lucide-react"
 import { ThemeToggle } from "./themes/theme-toggle"
-
+import { DASHBOARD_LINKS, HOME_LINKS } from "@/constants"
+// shadcn
+import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,13 +12,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
-import { DASHBOARD_LINKS, HOME_LINKS } from "@/constants"
 import { cn } from "@/lib/utils"
 
 export function Navbar() {
