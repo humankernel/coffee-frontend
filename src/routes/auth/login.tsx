@@ -1,21 +1,43 @@
-import { Link, createLazyFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute, redirect, useNavigate, useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { Button } from '@/components/ui/button'
-import { register } from '@/api/auth'
+import { PasswordField, UsernameField } from "@/components/forms/fields"
+import { usernameValidators, passwordValidators } from "@/components/forms/validators"
+import { useAuth } from '@/context/auth'
+import { z } from 'zod'
+import { toast } from 'sonner'
 
-import { AgeField, NameField, PasswordField, UsernameField } from "@/components/forms/fields"
-import { nameValidations, ageValidators, usernameValidators, passwordValidators } from "@/components/forms/validators"
+const fallback = "/" as const
 
-export const Route = createLazyFileRoute('/auth/register')({
-    component: RegisterPage
+export const Route = createFileRoute('/auth/login')({
+    validateSearch: z.object({
+        redirect: z.string().optional().catch("")
+    }),
+    beforeLoad: ({ context, search }) => {
+        if (context.auth.isAuthenticated)
+            throw redirect({ to: search.redirect || fallback })
+    },
+    component: LoginPage
 })
 
+export function LoginPage() {
+    const { login } = useAuth()
+    const router = useRouter()
+    const navigate = useNavigate()
+    const search = Route.useSearch()
 
-export function RegisterPage() {
     const form = useForm({
-        defaultValues: { name: '', age: '', username: '', password: '', },
-        onSubmit: async ({ value }) => { await register(value) },
+        defaultValues: { username: '', password: '' },
+        onSubmit: async ({ value }) => {
+            try {
+                await login({ ...value })
+                await router.invalidate()
+                await navigate({ to: search.redirect || fallback })
+            } catch (error) {
+                toast.error("Ocurrio un error al iniciar sesion")
+            }
+        },
         validatorAdapter: zodValidator
     })
 
@@ -24,9 +46,9 @@ export function RegisterPage() {
             <div className="flex items-center justify-center h-full">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
-                        <h1 className="text-3xl font-bold">Registrarse</h1>
+                        <h1 className="text-3xl font-bold">Iniciar Sesion</h1>
                         <p className="text-balance text-muted-foreground">
-                            Escribe tus datos personales
+                            Escribe tu nombre de usuario y contraseña
                         </p>
                     </div>
 
@@ -36,24 +58,6 @@ export function RegisterPage() {
                         form.handleSubmit()
                     }} >
                         <div className="grid gap-4">
-                            {/* NAME */}
-                            <form.Field
-                                name="name"
-                                validators={nameValidations}
-                                children={(field) =>
-                                    <NameField field={field} placeholder='John' />
-                                }
-                            />
-
-                            {/* AGE */}
-                            <form.Field
-                                name="age"
-                                validators={ageValidators}
-                                children={(field) =>
-                                    <AgeField field={field} placeholder='18' />
-                                }
-                            />
-
                             {/* USERNAME */}
                             <form.Field
                                 name="username"
@@ -76,15 +80,15 @@ export function RegisterPage() {
                                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                                 children={([canSubmit, isSubmitting]) => (
                                     <Button type="submit" size="sm" disabled={!canSubmit}>
-                                        {isSubmitting ? '...' : 'Registrarse'}
+                                        {isSubmitting ? '...' : 'Logearse'}
                                     </Button>
                                 )}
                             />
                         </div>
                         <div className="mt-4 text-center text-sm">
-                            Ya tienes una cuenta?{" "}
+                            No tienes una cuenta?{" "}
                             <Link to='/auth/register' className="underline">
-                                Loguearse
+                                Registrarse
                             </Link>
                         </div>
                     </form>

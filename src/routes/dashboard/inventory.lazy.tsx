@@ -29,7 +29,7 @@ function InventoryPage() {
         onError: () => toast.error("Error al eliminar el producto")
     })
 
-    return <div className="container mx-auto py-4">
+    return <main className="container mx-auto py-4">
         <DataTable
             columns={columns}
             data={data ?? []}
@@ -37,7 +37,7 @@ function InventoryPage() {
             insertForm={<InsertProductForm />}
             onDelete={mutate}
         />
-    </div>
+    </main>
 }
 
 

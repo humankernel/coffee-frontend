@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { Search } from "@/routes/store";
 
 export enum ProductType {
   food = "food",
@@ -12,6 +13,9 @@ export type Product = {
   desc: string;
   price: number;
   type: ProductType;
+  discount: number;
+  stars: number;
+  people: number;
 };
 
 export type Food = Product & {
@@ -39,7 +43,12 @@ export type Drink = Product & {
 
 export type Raw = Product & {};
 
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts({
+  filter,
+  sort,
+  limit,
+}: Search): Promise<Product[]> {
+  console.log("products-search-params", { filter, sort });
   const { data } = await api.get("/products");
   return data;
 }
@@ -113,4 +122,11 @@ export async function updateProduct(
     const { data } = await api.patch<Product>(`/products/raw/${id}`, product);
     return data;
   }
+}
+
+export function toggleAddToCart(id: number) {
+  console.log("add-to-cart", { id });
+}
+export function toggleFavorite(id: number) {
+  console.log("favorite", { id });
 }

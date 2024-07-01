@@ -1,4 +1,8 @@
 import { createLazyFileRoute } from '@tanstack/react-router'
+import { CoffeeIcon, PercentIcon, UsersIcon } from "lucide-react"
+import { useQuery } from '@tanstack/react-query'
+import { getRecentSales } from '@/api/sales'
+// shadcn
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
     Card,
@@ -8,11 +12,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { CoffeeIcon, PercentIcon, UsersIcon } from "lucide-react"
-import { useQuery } from '@tanstack/react-query'
-import { getRecentSales } from '@/api/sales'
 
-export const Route = createLazyFileRoute('/dashboard/')({ component: DashboardPage })
+export const Route = createLazyFileRoute('/dashboard/')({
+    component: DashboardPage
+})
 
 function DashboardPage() {
     return <div className="flex flex-col gap-4 w-full p-8">
@@ -21,7 +24,7 @@ function DashboardPage() {
             <AmountUsers />
             <BestSelledCoffee />
         </div>
-        <div className="">
+        <div>
             <RecentSales />
         </div>
     </div>
@@ -92,12 +95,10 @@ function BestSelledCoffee() {
 
 
 function RecentSales() {
-    const { data, error } = useQuery({
+    const { data } = useQuery({
         queryKey: ['sales'],
         queryFn: getRecentSales
     })
-
-    if (!data || error) return "error"
 
     return (
         <Card>
@@ -105,7 +106,7 @@ function RecentSales() {
                 <CardTitle>Ventas Recientes</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-8">
-                {data.map(sale =>
+                {data && data.map(sale =>
                     <div key={sale.id} className="flex items-center gap-4">
                         <Avatar className="hidden h-9 w-9 sm:flex">
                             <AvatarImage src="/avatars/05.png" alt="Avatar" />

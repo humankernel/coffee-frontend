@@ -58,10 +58,11 @@ export function DataTable<TData, TValue>({
     })
 
     const handleDelete = () => {
-        const idxs = Object.keys(rowSelection).map(Number)
-
-        if (onDelete)
-            for (const idx of idxs) if (data) onDelete(data[idx].id);
+        if (onDelete && data) {
+            const idxs = Object.keys(rowSelection).map(Number)
+            for (const idx of idxs)
+                if (data[idx]?.id) onDelete(data[idx]?.id);
+        }
     }
 
     return (

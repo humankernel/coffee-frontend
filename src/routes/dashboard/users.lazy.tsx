@@ -5,6 +5,7 @@ import { deleteUser, getUsers } from '@/api/users'
 import { InsertUserForm } from '@/components/forms/user'
 import { columns } from '@/components/table/columns/user'
 import { toast } from 'sonner'
+import { useEffect } from 'react'
 
 export const Route = createLazyFileRoute('/dashboard/users')({
     component: UsersPage,
@@ -18,8 +19,7 @@ function UsersPage() {
         queryFn: getUsers,
     })
 
-    console.log(data)
-    const { mutate } = useMutation({
+    const { mutate, } = useMutation({
         mutationKey: ['delete-users'],
         mutationFn: deleteUser,
         onSuccess: () => {

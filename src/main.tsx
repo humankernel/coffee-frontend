@@ -1,62 +1,44 @@
-import { StrictMode, Suspense } from 'react'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-
+import { ThemeProvider } from './components/themes/theme-provider'
+import "./globals.css"
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
-
-import { ThemeProvider } from './components/themes/theme-provider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import "./globals.css"
+import { AuthProvider, useAuth } from './context/auth'
 
-const router = createRouter({ routeTree })
+export const queryClient = new QueryClient()
+
+const router = createRouter({
+    routeTree,
+    context: { queryClient, auth: undefined! },
+    defaultPreload: 'intent',
+    defaultPreloadStaleTime: 0
+})
 
 declare module '@tanstack/react-router' {
     interface Register { router: typeof router }
 }
 
-const queryClient = new QueryClient()
-
-// devtools
-const TanStackRouterDevtools =
-    process.env.NODE_ENV === 'production'
-        ? () => null // Render nothing in production
-        : React.lazy(() =>
-            // Lazy load in development
-            import('@tanstack/router-devtools').then((res) => ({
-                default: res.TanStackRouterDevtools,
-                // For Embedded Mode
-                // default: res.TanStackRouterDevtoolsPanel
-            })),
-        )
-
-const ReactQueryDevtools =
-    process.env.NODE_ENV === 'production'
-        ? () => null // Render nothing in production
-        : React.lazy(() =>
-            import('@tanstack/react-query-devtools').then((res) => ({
-                default: res.ReactQueryDevtools,
-            })),
-        )
-
-
 const rootElement = document.getElementById('app')!
 if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement)
     root.render(
-        <StrictMode>
-            <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
-                <QueryClientProvider client={queryClient}>
-                    <RouterProvider router={router} />
-
-                    {/* devtools */}
-                    <Suspense>
-                        <TanStackRouterDevtools router={router} />
-                        {/* <ReactQueryDevtools /> */}
-                    </Suspense>
-                </QueryClientProvider>
-            </ThemeProvider>
-        </StrictMode>,
+        <React.StrictMode>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </React.StrictMode>,
     )
 }
 
+
+function App() {
+    const auth = useAuth()
+
+    return <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
+        <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} context={{ auth }} />
+        </QueryClientProvider>
+    </ThemeProvider>
+}
