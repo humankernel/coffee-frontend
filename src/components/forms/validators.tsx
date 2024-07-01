@@ -1,4 +1,5 @@
 import { Size, Temp } from "@/api/products"
+import { QsType } from "@/api/qs"
 import { Role } from "@/api/users"
 import { z } from "zod"
 
@@ -134,5 +135,10 @@ export const tempValidators = {
 
 export const drinkValidators = {
     onChange: z.string().min(3),
+    onChangeAsyncDebounceMs: 500,
+}
+
+export const qsTypeValidators = {
+    onChange: z.nativeEnum(QsType),
     onChangeAsyncDebounceMs: 500,
 }

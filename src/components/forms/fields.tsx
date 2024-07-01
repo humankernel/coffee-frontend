@@ -12,10 +12,11 @@ import { Textarea } from "@/components/ui/textarea"
 
 import { type FieldApi } from "@tanstack/react-form"
 import { FieldInfo } from "@/lib/utils"
-import { DollarSignIcon, IceCreamConeIcon } from "lucide-react"
+import { DollarSignIcon } from "lucide-react"
 import { useState } from "react"
 import { MultiSelect } from "../ui/multi-select"
 import { INGREDIENTS } from "@/constants"
+import { QsType } from "@/api/qs"
 
 type FieldParams = { field: FieldApi<any, any, any, any>, placeholder: string }
 
@@ -257,6 +258,26 @@ export function DrinkTypeField({ field, placeholder }: FieldParams) {
             onChange={(e) => field.handleChange(e.target.value)}
             placeholder={placeholder}
         />
+        <FieldInfo field={field} />
+    </div>
+}
+
+export function QsTypeField({ field }: Omit<FieldParams, 'placeholder'>) {
+    return <div className="grid gap-2">
+        <Label htmlFor={field.name}> Queja/Sugerencia </Label>
+        <Select
+            name={field.name}
+            value={field.state.value}
+            onValueChange={(e) => field.handleChange(e)}
+        >
+            <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Selecciona Q/S" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value={QsType.complaint}>Queja</SelectItem>
+                <SelectItem value={QsType.suggestion}>Sugerencia</SelectItem>
+            </SelectContent>
+        </Select>
         <FieldInfo field={field} />
     </div>
 }

@@ -18,6 +18,7 @@ import {
     AvatarImage,
 } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/context/auth"
 
 export function Navbar() {
     const pathname = useLocation({ select: (location) => location.pathname })
@@ -38,7 +39,7 @@ export function Navbar() {
                                 variant="link"
                                 size="sm"
                                 className={cn("dark:text-white/60",
-                                    { "underline": pathname.includes(link.href) }
+                                    { "underline": pathname === link.href }
                                 )}
                             >
                                 {link.name}
@@ -58,37 +59,40 @@ export function Navbar() {
 
 
 function UserDropdown() {
-    const session = undefined
+    const { isAuthenticated, user, logout } = useAuth()
+
+    console.log(user)
 
     return <DropdownMenu>
         <DropdownMenuTrigger>
-            <Avatar className="w-8 h-8 border p-1">
+            <Avatar className="w-8 h-8 border p-1 hover:border-primary">
                 <AvatarImage src="src/assets/react.svg" alt="user" />
-                <AvatarFallback>user</AvatarFallback>
+                <AvatarFallback>{user?.username}</AvatarFallback>
             </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+            <DropdownMenuLabel> {user?.username} </DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Button size="sm" variant="ghost" className="flex justify-start w-full rounded-[0.5rem] rounded-t-2xl">
-                    <Link to="/user/profile"> Perfil </Link>
+                <Button size="sm" variant="ghost" className="flex mb-2 justify-start w-full rounded-[0.5rem]">
+                    <Link to="/"> Perfil </Link>
                 </Button>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {session
+            {isAuthenticated
                 ? <DropdownMenuItem asChild>
-                    <Button size="sm" className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
-                        <Link to="/auth/logout"> Cerrar Sesion </Link>
+                    <Button onClick={logout} size="sm" className="flex mb-2 justify-start w-full rounded-[0.5rem] rounded-b-2xl">
+                        Cerrar Sesion
                     </Button>
                 </DropdownMenuItem>
                 : <>
                     <DropdownMenuItem asChild>
-                        <Button size="sm" variant="ghost" className="flex justify-start w-full rounded-[0.5rem]">
+                        <Button size="sm" variant="ghost" className="flex mb-2 justify-start w-full rounded-[0.5rem]" >
                             <Link to="/auth/login"> Iniciar Sesion </Link>
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Button size="sm" className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
-                            <Link to="/auth/login"> Crear Cuenta </Link>
+                            <Link to="/auth/register"> Crear Cuenta </Link>
                         </Button>
                     </DropdownMenuItem>
                 </>

@@ -1,16 +1,8 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
-// shadcn
-import { Button } from '@/components/ui/button'
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import { Link, createLazyFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { getProducts } from '@/api/products'
-import { ProductCard, ProductCardHorizontal } from '@/components/product-card'
+import { ProductCardHorizontal } from '@/components/product-card'
+import { Button } from '@/components/ui/button'
 
 export const Route = createLazyFileRoute('/')({
     component: Index,
@@ -28,7 +20,11 @@ function Index() {
                     </h1>
                     <p className="leading-7 opacity-70 [&:not(:first-child)]:mt-6">
                         El café es la mejor parte de despertarse.</p>
-                    <Button size="sm" className='mt-10'>¡Ordena ya!</Button>
+                    <Button size="sm" className='mt-10'>
+                        <Link to="/store/" >
+                            ¡Ordena ya!
+                        </Link>
+                    </Button>
                 </div>
                 <div className="relative flex justify-center items-center">
                     <img src="src/assets/home-img.svg" alt="logo" className="z-20 w-[24rem] h-[24rem] md:w-[30rem] md:h-[30rem] mx-auto" />

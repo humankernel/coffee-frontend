@@ -1,22 +1,22 @@
-import { getProduct } from '@/api/products'
 import { Stars } from '@/components/product-card'
-import { Link, createFileRoute, useLoaderData } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 // shadcn
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { HeartIcon, ShoppingCartIcon } from 'lucide-react'
+import { productOptions } from '@/queries/products'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 
 export const Route = createFileRoute('/store/$productId')({
     component: ProductPage,
-    loader: ({ params: { productId } }) => getProduct(+productId)
+    loader: ({ context: { queryClient }, params: { productId } }) =>
+        queryClient.ensureQueryData(productOptions(+productId))
 })
 
 function ProductPage() {
-    const data = useLoaderData({ from: Route.fullPath })
-
-    console.log(data)
+    const { productId } = useParams({ from: Route.fullPath })
+    const { data } = useSuspenseQuery(productOptions(+productId))
 
     return <section>
         <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
@@ -49,17 +49,13 @@ function ProductPage() {
                     </div>
 
                     <div className="mt-6 gap-2 sm:items-center flex sm:mt-8">
-                        <Button asChild>
-                            <Link to="/store" >
-                                <ShoppingCartIcon className='mr-2 h-4 w-4' />
-                                Añadir al carrito
-                            </Link>
+                        <Button>
+                            <ShoppingCartIcon className='mr-2 h-4 w-4' />
+                            Añadir al carrito
                         </Button>
 
                         <Button variant="outline" size="icon" asChild>
-                            <Link to="/store" >
-                                <HeartIcon className='h-4 w-4' />
-                            </Link>
+                            <HeartIcon className='h-4 w-4' />
                         </Button>
                     </div>
 

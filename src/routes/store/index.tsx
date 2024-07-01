@@ -1,7 +1,9 @@
-import { Link, createFileRoute, useSearch } from '@tanstack/react-router'
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { z } from 'zod'
+import { ProductCard, Stars } from '@/components/product-card'
 import { Searchbar } from '@/components/searchbar'
+import { productsOptions } from '@/queries/products'
 // shadcn
 import { Button } from '@/components/ui/button'
 import { ArrowDown01Icon, ArrowDownAzIcon, ArrowUpZAIcon, ArrowUpZaIcon, ChevronDownIcon, FilterIcon } from 'lucide-react'
@@ -9,10 +11,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-
-import { getProducts } from '@/api/products'
-import { queryClient } from '@/main'
-import { ProductCard, Stars } from '@/components/product-card'
 
 
 const searchSchema = z.object({
@@ -23,21 +21,18 @@ const searchSchema = z.object({
 
 export type Search = z.infer<typeof searchSchema>
 
-const productsOptions = (deps: Search) => queryOptions({
-    queryKey: [deps, 'products'],
-    queryFn: () => getProducts(deps)
-})
 
 export const Route = createFileRoute('/store/')({
     component: StorePage,
     validateSearch: searchSchema,
     loaderDeps: ({ search }) => search,
-    loader: ({ deps }) => queryClient.ensureQueryData(productsOptions(deps))
+    loader: ({ deps, context: { queryClient } }) =>
+        queryClient.ensureQueryData(productsOptions(deps))
 })
 
 
 function StorePage() {
-    const deps = useSearch({ from: Route.fullPath })
+    const deps = Route.useSearch()
     const { data } = useSuspenseQuery(productsOptions(deps))
 
     return <section className="p-4">

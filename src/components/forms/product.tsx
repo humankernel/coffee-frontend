@@ -42,7 +42,7 @@ export function InsertProductForm() {
             e.stopPropagation()
             form.handleSubmit()
         }} >
-            <ScrollArea className="h-[60vh] p-2">
+            <ScrollArea className="max-h-[60vh] p-2">
                 <div className="grid w-full items-center gap-4">
                     {/* NAME */}
                     <form.Field

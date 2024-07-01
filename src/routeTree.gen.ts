@@ -15,6 +15,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as StoreIndexImport } from './routes/store/index'
 import { Route as StoreProductIdImport } from './routes/store/$productId'
+import { Route as AuthRegisterImport } from './routes/auth/register'
+import { Route as AuthLoginImport } from './routes/auth/login'
 
 // Create Virtual Routes
 
@@ -26,8 +28,6 @@ const DashboardSuppliersLazyImport = createFileRoute('/dashboard/suppliers')()
 const DashboardQsLazyImport = createFileRoute('/dashboard/qs')()
 const DashboardOrdersLazyImport = createFileRoute('/dashboard/orders')()
 const DashboardInventoryLazyImport = createFileRoute('/dashboard/inventory')()
-const AuthRegisterLazyImport = createFileRoute('/auth/register')()
-const AuthLoginLazyImport = createFileRoute('/auth/login')()
 
 // Create/Update Routes
 
@@ -86,18 +86,18 @@ const DashboardInventoryLazyRoute = DashboardInventoryLazyImport.update({
   import('./routes/dashboard/inventory.lazy').then((d) => d.Route),
 )
 
-const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
-  path: '/auth/register',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route))
-
-const AuthLoginLazyRoute = AuthLoginLazyImport.update({
-  path: '/auth/login',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
-
 const StoreProductIdRoute = StoreProductIdImport.update({
   path: '/store/$productId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRegisterRoute = AuthRegisterImport.update({
+  path: '/auth/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthLoginRoute = AuthLoginImport.update({
+  path: '/auth/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -119,25 +119,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
-    '/store/$productId': {
-      id: '/store/$productId'
-      path: '/store/$productId'
-      fullPath: '/store/$productId'
-      preLoaderRoute: typeof StoreProductIdImport
-      parentRoute: typeof rootRoute
-    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
       fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginLazyImport
+      preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof rootRoute
     }
     '/auth/register': {
       id: '/auth/register'
       path: '/auth/register'
       fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterLazyImport
+      preLoaderRoute: typeof AuthRegisterImport
+      parentRoute: typeof rootRoute
+    }
+    '/store/$productId': {
+      id: '/store/$productId'
+      path: '/store/$productId'
+      fullPath: '/store/$productId'
+      preLoaderRoute: typeof StoreProductIdImport
       parentRoute: typeof rootRoute
     }
     '/dashboard/inventory': {
@@ -197,9 +197,9 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   AboutLazyRoute,
+  AuthLoginRoute,
+  AuthRegisterRoute,
   StoreProductIdRoute,
-  AuthLoginLazyRoute,
-  AuthRegisterLazyRoute,
   DashboardInventoryLazyRoute,
   DashboardOrdersLazyRoute,
   DashboardQsLazyRoute,
@@ -219,9 +219,9 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/about",
-        "/store/$productId",
         "/auth/login",
         "/auth/register",
+        "/store/$productId",
         "/dashboard/inventory",
         "/dashboard/orders",
         "/dashboard/qs",
@@ -237,14 +237,14 @@ export const routeTree = rootRoute.addChildren({
     "/about": {
       "filePath": "about.lazy.tsx"
     },
-    "/store/$productId": {
-      "filePath": "store/$productId.tsx"
-    },
     "/auth/login": {
-      "filePath": "auth/login.lazy.tsx"
+      "filePath": "auth/login.tsx"
     },
     "/auth/register": {
-      "filePath": "auth/register.lazy.tsx"
+      "filePath": "auth/register.tsx"
+    },
+    "/store/$productId": {
+      "filePath": "store/$productId.tsx"
     },
     "/dashboard/inventory": {
       "filePath": "dashboard/inventory.lazy.tsx"
