@@ -1,7 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router"
-import { CoffeeIcon, StoreIcon } from "lucide-react"
+import { CoffeeIcon } from "lucide-react"
 import { ThemeToggle } from "./themes/theme-toggle"
 import { DASHBOARD_LINKS, HOME_LINKS } from "@/constants"
+import { CartDropdown } from "@/components/cart"
 // shadcn
 import { Button } from "@/components/ui/button"
 import {
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/context/auth"
+
 
 export function Navbar() {
     const pathname = useLocation({ select: (location) => location.pathname })
@@ -49,7 +51,7 @@ export function Navbar() {
                 </nav>
             </div>
             <div className="flex items-center gap-2">
-                <ShoppingCart />
+                <CartDropdown />
                 <ThemeToggle />
                 <UserDropdown />
             </div>
@@ -99,21 +101,3 @@ function UserDropdown() {
     </DropdownMenu>
 }
 
-function ShoppingCart() {
-    return <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-            <Button size="icon" variant="ghost">
-                <StoreIcon className="w-4 h-4" />
-            </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-            <DropdownMenuLabel>Tu Carrito</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>item1</DropdownMenuItem>
-            <DropdownMenuItem>item1</DropdownMenuItem>
-            <DropdownMenuItem>item1</DropdownMenuItem>
-            <DropdownMenuItem>item1</DropdownMenuItem>
-        </DropdownMenuContent>
-    </DropdownMenu>
-
-}
