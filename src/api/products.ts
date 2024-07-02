@@ -48,7 +48,7 @@ export async function getProducts({
   sort,
   limit,
 }: Search): Promise<Product[]> {
-  console.log("products-search-params", { filter, sort });
+  // TODO:
   const { data } = await api.get("/products");
   return data;
 }
@@ -58,6 +58,12 @@ export async function deleteProduct(id: number): Promise<Product> {
   return data;
 }
 
+export async function getProduct(id: number): Promise<Product> {
+  const { data } = await api.get<Product>(`/products/${id}`);
+  return data;
+}
+
+// FIX:
 export async function insertProduct(
   product: Omit<Food, "id"> | Omit<Drink, "id"> | Omit<Raw, "id">,
 ): Promise<Food | Drink | Raw> {
@@ -93,11 +99,7 @@ export async function insertProduct(
   throw new Error("type does not exists");
 }
 
-export async function getProduct(id: number): Promise<Product> {
-  const { data } = await api.get<Product>(`/products/${id}`);
-  return data;
-}
-
+// FIX:
 export async function updateProduct(
   id: number,
   product: Partial<Product>,
@@ -124,9 +126,12 @@ export async function updateProduct(
   }
 }
 
+// TODO:
 export function toggleAddToCart(id: number) {
   console.log("add-to-cart", { id });
 }
+
+// TODO:
 export function toggleFavorite(id: number) {
   console.log("favorite", { id });
 }

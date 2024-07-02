@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { ThemeProvider } from './components/themes/theme-provider'
 import "./globals.css"
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './context/auth'
+import { ThemeProvider } from './components/themes/theme-provider'
 
 export const queryClient = new QueryClient()
 
@@ -25,9 +25,13 @@ if (!rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement)
     root.render(
         <React.StrictMode>
-            <AuthProvider>
-                <App />
-            </AuthProvider>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                    <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
+                        <App />
+                    </ThemeProvider>
+                </AuthProvider>
+            </QueryClientProvider>
         </React.StrictMode>,
     )
 }
@@ -35,10 +39,5 @@ if (!rootElement.innerHTML) {
 
 function App() {
     const auth = useAuth()
-
-    return <ThemeProvider defaultTheme='system' storageKey='vite-ui-theme'>
-        <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} context={{ auth }} />
-        </QueryClientProvider>
-    </ThemeProvider>
+    return <RouterProvider router={router} context={{ auth }} />
 }

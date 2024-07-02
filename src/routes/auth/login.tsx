@@ -35,7 +35,8 @@ export function LoginPage() {
                 await router.invalidate()
                 await navigate({ to: search.redirect || fallback })
             } catch (error) {
-                toast.error("Ocurrio un error al iniciar sesion")
+                // toast.error("Ocurrio un error al iniciar sesion")
+                toast.error(error?.message)
             }
         },
         validatorAdapter: zodValidator

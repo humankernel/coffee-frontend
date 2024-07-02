@@ -80,7 +80,7 @@ function UserDropdown() {
             </DropdownMenuItem>
             {isAuthenticated
                 ? <DropdownMenuItem asChild>
-                    <Button onClick={logout} size="sm" className="flex mb-2 justify-start w-full rounded-[0.5rem] rounded-b-2xl">
+                    <Button onClick={logout} size="sm" className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
                         Cerrar Sesion
                     </Button>
                 </DropdownMenuItem>

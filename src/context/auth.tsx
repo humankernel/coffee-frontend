@@ -1,6 +1,5 @@
 import { api } from "@/api"
 import { createContext, useCallback, useContext, useState } from "react"
-import { extendTailwindMerge } from "tailwind-merge"
 
 interface User {
     sub: number
@@ -23,9 +22,9 @@ interface RegisterCredentials extends LoginCredentials {
 export interface AuthContext {
     token: string | null
     isAuthenticated: boolean
-    login: (Credentials: LoginCredentials) => Promise<void>
     logout: () => Promise<void>
-    register: (Credentials: RegisterCredentials) => Promise<void>
+    login: (credentials: LoginCredentials) => Promise<void>
+    register: (credentials: RegisterCredentials) => Promise<void>
     user: User | null
 }
 
@@ -58,8 +57,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setStoredUser(null)
     }, [])
 
-    const login = useCallback(async (credentials: { username: string, password: string }) => {
+    const login = useCallback(async (credentials: LoginCredentials) => {
         const { data } = await api.post<LoginRes>("/auth/login", credentials)
+        console.log(data)
         if (!data.token) throw new Error("Error while trying to login")
 
         const { data: userRes } = await api.get<User>("/auth/me", {
@@ -67,12 +67,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
         if (!userRes) throw new Error("An Error happend while trying to fetch user's data")
 
+        console.log("login", { userRes })
         setToken(data.token)
         setUser(userRes)
         setStoredUser(userRes)
     }, [])
 
-    const register = useCallback(async () => { }, [])
+    const register = useCallback(async (credentials: RegisterCredentials) => {
+        const { data } = await api.post<LoginRes>("/auth/register", credentials)
+        if (!data) throw new Error("Error while trying to register")
+
+        console.log(data)
+
+        await login(credentials)
+    }, [login])
 
     return <AuthContext.Provider value={{ token, isAuthenticated, user, login, register, logout }}>
         {children}

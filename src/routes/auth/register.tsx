@@ -32,10 +32,11 @@ export function RegisterPage() {
         defaultValues: { name: '', age: '', username: '', password: '', },
         onSubmit: async ({ value }) => {
             try {
-                await register({ ...value })
+                await register(value)
                 await router.invalidate()
                 await navigate({ to: search.redirect || fallback })
             } catch (error) {
+                console.log(error)
                 toast.error("Ocurrio un error al registrarse")
             }
         },

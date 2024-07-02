@@ -1,4 +1,9 @@
-import { LinkItem } from "@/types";
+import { LinkProps } from "@tanstack/react-router";
+
+type LinkItem = {
+  name: string;
+  href: LinkProps["to"];
+};
 
 export const API_BASE = "http://localhost:3001";
 
