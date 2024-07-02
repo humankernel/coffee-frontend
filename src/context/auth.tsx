@@ -59,7 +59,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const login = useCallback(async (credentials: LoginCredentials) => {
         const { data } = await api.post<LoginRes>("/auth/login", credentials)
-        console.log(data)
         if (!data.token) throw new Error("Error while trying to login")
 
         const { data: userRes } = await api.get<User>("/auth/me", {
@@ -67,7 +66,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         })
         if (!userRes) throw new Error("An Error happend while trying to fetch user's data")
 
-        console.log("login", { userRes })
         setToken(data.token)
         setUser(userRes)
         setStoredUser(userRes)
@@ -76,8 +74,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const register = useCallback(async (credentials: RegisterCredentials) => {
         const { data } = await api.post<LoginRes>("/auth/register", credentials)
         if (!data) throw new Error("Error while trying to register")
-
-        console.log(data)
 
         await login(credentials)
     }, [login])
