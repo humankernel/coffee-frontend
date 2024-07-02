@@ -125,13 +125,3 @@ export async function updateProduct(
     return data;
   }
 }
-
-// TODO:
-export function toggleAddToCart(id: number) {
-  console.log("add-to-cart", { id });
-}
-
-// TODO:
-export function toggleFavorite(id: number) {
-  console.log("favorite", { id });
-}
