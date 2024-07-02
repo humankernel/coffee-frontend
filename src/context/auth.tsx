@@ -1,10 +1,11 @@
 import { api } from "@/api"
+import { Role } from "@/api/users"
 import { createContext, useCallback, useContext, useState } from "react"
 
 interface User {
     sub: number
     username: string
-    role: string
+    role: Role
     iat: number
     exp: number
 }
