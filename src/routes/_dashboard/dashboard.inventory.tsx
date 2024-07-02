@@ -1,5 +1,5 @@
 import { DataTable } from '@/components/table/data-table'
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
 import { deleteProduct, getProducts } from '@/api/products'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -7,7 +7,7 @@ import { InsertProductForm } from '@/components/forms/product'
 import { columns } from '@/components/table/columns/products'
 import { toast } from 'sonner'
 
-export const Route = createLazyFileRoute('/dashboard/inventory')({
+export const Route = createFileRoute('/_dashboard/dashboard/inventory')({
     component: InventoryPage
 })
 
@@ -16,7 +16,7 @@ function InventoryPage() {
 
     const { data } = useQuery({
         queryKey: ['products'],
-        queryFn: getProducts
+        queryFn: () => getProducts({})
     })
 
     const { mutate } = useMutation({

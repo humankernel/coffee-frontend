@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { CoffeeIcon, PercentIcon, UsersIcon } from "lucide-react"
 import { useQuery } from '@tanstack/react-query'
 import { getRecentSales } from '@/api/sales'
@@ -13,7 +13,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-export const Route = createLazyFileRoute('/dashboard/')({
+export const Route = createFileRoute('/_dashboard/dashboard/')({
     component: DashboardPage
 })
 

@@ -3,10 +3,10 @@ import { InsertQsForm } from '@/components/forms/qs'
 import { columns } from '@/components/table/columns/qs'
 import { DataTable } from '@/components/table/data-table'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
-export const Route = createLazyFileRoute('/dashboard/qs')({
+export const Route = createFileRoute('/_dashboard/dashboard/qs')({
     component: QsPage
 })
 
