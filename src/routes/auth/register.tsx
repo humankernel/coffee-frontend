@@ -36,7 +36,7 @@ export function RegisterPage() {
                 await router.invalidate()
                 await navigate({ to: search.redirect || fallback })
             } catch (error) {
-                console.log(error)
+                console.error(error)
                 toast.error("Ocurrio un error al registrarse")
             }
         },
