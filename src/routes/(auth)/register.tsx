@@ -2,15 +2,15 @@ import { Link, createFileRoute, redirect, useNavigate, useRouter } from '@tansta
 import { useForm } from '@tanstack/react-form'
 import { zodValidator } from '@tanstack/zod-form-adapter'
 import { Button } from '@/components/ui/button'
-import { PasswordField, UsernameField } from "@/components/forms/fields"
-import { usernameValidators, passwordValidators } from "@/components/forms/validators"
-import { useAuth } from '@/context/auth'
+import { AgeField, NameField, PasswordField, UsernameField } from "@/components/forms/fields"
+import { nameValidations, ageValidators, usernameValidators, passwordValidators } from "@/components/forms/validators"
 import { z } from 'zod'
+import { useAuth } from '@/context/auth'
 import { toast } from 'sonner'
 
 const fallback = "/" as const
 
-export const Route = createFileRoute('/auth/login')({
+export const Route = createFileRoute('/(auth)/register')({
     validateSearch: z.object({
         redirect: z.string().optional().catch("")
     }),
@@ -18,25 +18,26 @@ export const Route = createFileRoute('/auth/login')({
         if (context.auth.isAuthenticated)
             throw redirect({ to: search.redirect || fallback })
     },
-    component: LoginPage
+    component: RegisterPage
 })
 
-export function LoginPage() {
-    const { login } = useAuth()
+
+export function RegisterPage() {
+    const { register } = useAuth()
     const router = useRouter()
     const navigate = useNavigate()
     const search = Route.useSearch()
 
     const form = useForm({
-        defaultValues: { username: '', password: '' },
+        defaultValues: { name: '', age: '', username: '', password: '', },
         onSubmit: async ({ value }) => {
             try {
-                await login({ ...value })
+                await register(value)
                 await router.invalidate()
                 await navigate({ to: search.redirect || fallback })
             } catch (error) {
-                // toast.error("Ocurrio un error al iniciar sesion")
-                toast.error(error?.message)
+                console.error(error)
+                toast.error("Ocurrio un error al registrarse")
             }
         },
         validatorAdapter: zodValidator
@@ -47,9 +48,9 @@ export function LoginPage() {
             <div className="flex items-center justify-center h-full">
                 <div className="mx-auto grid w-[350px] gap-6">
                     <div className="grid gap-2 text-center">
-                        <h1 className="text-3xl font-bold">Iniciar Sesion</h1>
+                        <h1 className="text-3xl font-bold">Registrarse</h1>
                         <p className="text-balance text-muted-foreground">
-                            Escribe tu nombre de usuario y contraseña
+                            Escribe tus datos personales
                         </p>
                     </div>
 
@@ -59,6 +60,24 @@ export function LoginPage() {
                         form.handleSubmit()
                     }} >
                         <div className="grid gap-4">
+                            {/* NAME */}
+                            <form.Field
+                                name="name"
+                                validators={nameValidations}
+                                children={(field) =>
+                                    <NameField field={field} placeholder='John' />
+                                }
+                            />
+
+                            {/* AGE */}
+                            <form.Field
+                                name="age"
+                                validators={ageValidators}
+                                children={(field) =>
+                                    <AgeField field={field} placeholder='18' />
+                                }
+                            />
+
                             {/* USERNAME */}
                             <form.Field
                                 name="username"
@@ -81,15 +100,15 @@ export function LoginPage() {
                                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                                 children={([canSubmit, isSubmitting]) => (
                                     <Button type="submit" size="sm" disabled={!canSubmit}>
-                                        {isSubmitting ? '...' : 'Logearse'}
+                                        {isSubmitting ? '...' : 'Registrarse'}
                                     </Button>
                                 )}
                             />
                         </div>
                         <div className="mt-4 text-center text-sm">
-                            No tienes una cuenta?{" "}
+                            Ya tienes una cuenta?{" "}
                             <Link to='/auth/register' className="underline">
-                                Registrarse
+                                Loguearse
                             </Link>
                         </div>
                     </form>

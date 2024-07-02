@@ -13,21 +13,22 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as DashboardImport } from './routes/_dashboard'
 import { Route as StoreIndexImport } from './routes/store/index'
 import { Route as StoreProductIdImport } from './routes/store/$productId'
-import { Route as AuthRegisterImport } from './routes/auth/register'
-import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as authRegisterImport } from './routes/(auth)/register'
+import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as DashboardDashboardIndexImport } from './routes/_dashboard/dashboard.index'
+import { Route as DashboardDashboardUsersImport } from './routes/_dashboard/dashboard.users'
+import { Route as DashboardDashboardSuppliersImport } from './routes/_dashboard/dashboard.suppliers'
+import { Route as DashboardDashboardQsImport } from './routes/_dashboard/dashboard.qs'
+import { Route as DashboardDashboardOrdersImport } from './routes/_dashboard/dashboard.orders'
+import { Route as DashboardDashboardInventoryImport } from './routes/_dashboard/dashboard.inventory'
 
 // Create Virtual Routes
 
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
-const DashboardIndexLazyImport = createFileRoute('/dashboard/')()
-const DashboardUsersLazyImport = createFileRoute('/dashboard/users')()
-const DashboardSuppliersLazyImport = createFileRoute('/dashboard/suppliers')()
-const DashboardQsLazyImport = createFileRoute('/dashboard/qs')()
-const DashboardOrdersLazyImport = createFileRoute('/dashboard/orders')()
-const DashboardInventoryLazyImport = createFileRoute('/dashboard/inventory')()
 
 // Create/Update Routes
 
@@ -36,70 +37,67 @@ const AboutLazyRoute = AboutLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
+const DashboardRoute = DashboardImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-
-const DashboardIndexLazyRoute = DashboardIndexLazyImport.update({
-  path: '/dashboard/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboard/index.lazy').then((d) => d.Route),
-)
 
 const StoreIndexRoute = StoreIndexImport.update({
   path: '/store/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DashboardUsersLazyRoute = DashboardUsersLazyImport.update({
-  path: '/dashboard/users',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboard/users.lazy').then((d) => d.Route),
-)
-
-const DashboardSuppliersLazyRoute = DashboardSuppliersLazyImport.update({
-  path: '/dashboard/suppliers',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboard/suppliers.lazy').then((d) => d.Route),
-)
-
-const DashboardQsLazyRoute = DashboardQsLazyImport.update({
-  path: '/dashboard/qs',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/dashboard/qs.lazy').then((d) => d.Route))
-
-const DashboardOrdersLazyRoute = DashboardOrdersLazyImport.update({
-  path: '/dashboard/orders',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboard/orders.lazy').then((d) => d.Route),
-)
-
-const DashboardInventoryLazyRoute = DashboardInventoryLazyImport.update({
-  path: '/dashboard/inventory',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/dashboard/inventory.lazy').then((d) => d.Route),
-)
-
 const StoreProductIdRoute = StoreProductIdImport.update({
   path: '/store/$productId',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthRegisterRoute = AuthRegisterImport.update({
-  path: '/auth/register',
+const authRegisterRoute = authRegisterImport.update({
+  path: '/register',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthLoginRoute = AuthLoginImport.update({
-  path: '/auth/login',
+const authLoginRoute = authLoginImport.update({
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
+
+const DashboardDashboardIndexRoute = DashboardDashboardIndexImport.update({
+  path: '/dashboard/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardDashboardUsersRoute = DashboardDashboardUsersImport.update({
+  path: '/dashboard/users',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardDashboardSuppliersRoute =
+  DashboardDashboardSuppliersImport.update({
+    path: '/dashboard/suppliers',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+
+const DashboardDashboardQsRoute = DashboardDashboardQsImport.update({
+  path: '/dashboard/qs',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardDashboardOrdersRoute = DashboardDashboardOrdersImport.update({
+  path: '/dashboard/orders',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardDashboardInventoryRoute =
+  DashboardDashboardInventoryImport.update({
+    path: '/dashboard/inventory',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -112,6 +110,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -119,18 +124,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginImport
+    '/(auth)/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginImport
       parentRoute: typeof rootRoute
     }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/auth/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterImport
+    '/(auth)/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterImport
       parentRoute: typeof rootRoute
     }
     '/store/$productId': {
@@ -140,41 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoreProductIdImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/inventory': {
-      id: '/dashboard/inventory'
-      path: '/dashboard/inventory'
-      fullPath: '/dashboard/inventory'
-      preLoaderRoute: typeof DashboardInventoryLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/orders': {
-      id: '/dashboard/orders'
-      path: '/dashboard/orders'
-      fullPath: '/dashboard/orders'
-      preLoaderRoute: typeof DashboardOrdersLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/qs': {
-      id: '/dashboard/qs'
-      path: '/dashboard/qs'
-      fullPath: '/dashboard/qs'
-      preLoaderRoute: typeof DashboardQsLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/suppliers': {
-      id: '/dashboard/suppliers'
-      path: '/dashboard/suppliers'
-      fullPath: '/dashboard/suppliers'
-      preLoaderRoute: typeof DashboardSuppliersLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/users': {
-      id: '/dashboard/users'
-      path: '/dashboard/users'
-      fullPath: '/dashboard/users'
-      preLoaderRoute: typeof DashboardUsersLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/store/': {
       id: '/store/'
       path: '/store'
@@ -182,12 +152,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoreIndexImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard/': {
-      id: '/dashboard/'
+    '/_dashboard/dashboard/inventory': {
+      id: '/_dashboard/dashboard/inventory'
+      path: '/dashboard/inventory'
+      fullPath: '/dashboard/inventory'
+      preLoaderRoute: typeof DashboardDashboardInventoryImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/dashboard/orders': {
+      id: '/_dashboard/dashboard/orders'
+      path: '/dashboard/orders'
+      fullPath: '/dashboard/orders'
+      preLoaderRoute: typeof DashboardDashboardOrdersImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/dashboard/qs': {
+      id: '/_dashboard/dashboard/qs'
+      path: '/dashboard/qs'
+      fullPath: '/dashboard/qs'
+      preLoaderRoute: typeof DashboardDashboardQsImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/dashboard/suppliers': {
+      id: '/_dashboard/dashboard/suppliers'
+      path: '/dashboard/suppliers'
+      fullPath: '/dashboard/suppliers'
+      preLoaderRoute: typeof DashboardDashboardSuppliersImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/dashboard/users': {
+      id: '/_dashboard/dashboard/users'
+      path: '/dashboard/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardDashboardUsersImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/dashboard/': {
+      id: '/_dashboard/dashboard/'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardIndexLazyImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof DashboardDashboardIndexImport
+      parentRoute: typeof DashboardImport
     }
   }
 }
@@ -196,17 +201,19 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
+  DashboardRoute: DashboardRoute.addChildren({
+    DashboardDashboardInventoryRoute,
+    DashboardDashboardOrdersRoute,
+    DashboardDashboardQsRoute,
+    DashboardDashboardSuppliersRoute,
+    DashboardDashboardUsersRoute,
+    DashboardDashboardIndexRoute,
+  }),
   AboutLazyRoute,
-  AuthLoginRoute,
-  AuthRegisterRoute,
+  authLoginRoute,
+  authRegisterRoute,
   StoreProductIdRoute,
-  DashboardInventoryLazyRoute,
-  DashboardOrdersLazyRoute,
-  DashboardQsLazyRoute,
-  DashboardSuppliersLazyRoute,
-  DashboardUsersLazyRoute,
   StoreIndexRoute,
-  DashboardIndexLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -218,54 +225,66 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/_dashboard",
         "/about",
-        "/auth/login",
-        "/auth/register",
+        "/login",
+        "/register",
         "/store/$productId",
-        "/dashboard/inventory",
-        "/dashboard/orders",
-        "/dashboard/qs",
-        "/dashboard/suppliers",
-        "/dashboard/users",
-        "/store/",
-        "/dashboard/"
+        "/store/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
+    "/_dashboard": {
+      "filePath": "_dashboard.tsx",
+      "children": [
+        "/_dashboard/dashboard/inventory",
+        "/_dashboard/dashboard/orders",
+        "/_dashboard/dashboard/qs",
+        "/_dashboard/dashboard/suppliers",
+        "/_dashboard/dashboard/users",
+        "/_dashboard/dashboard/"
+      ]
+    },
     "/about": {
       "filePath": "about.lazy.tsx"
     },
-    "/auth/login": {
-      "filePath": "auth/login.tsx"
+    "/login": {
+      "filePath": "(auth)/login.tsx"
     },
-    "/auth/register": {
-      "filePath": "auth/register.tsx"
+    "/register": {
+      "filePath": "(auth)/register.tsx"
     },
     "/store/$productId": {
       "filePath": "store/$productId.tsx"
     },
-    "/dashboard/inventory": {
-      "filePath": "dashboard/inventory.lazy.tsx"
-    },
-    "/dashboard/orders": {
-      "filePath": "dashboard/orders.lazy.tsx"
-    },
-    "/dashboard/qs": {
-      "filePath": "dashboard/qs.lazy.tsx"
-    },
-    "/dashboard/suppliers": {
-      "filePath": "dashboard/suppliers.lazy.tsx"
-    },
-    "/dashboard/users": {
-      "filePath": "dashboard/users.lazy.tsx"
-    },
     "/store/": {
       "filePath": "store/index.tsx"
     },
-    "/dashboard/": {
-      "filePath": "dashboard/index.lazy.tsx"
+    "/_dashboard/dashboard/inventory": {
+      "filePath": "_dashboard/dashboard.inventory.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/dashboard/orders": {
+      "filePath": "_dashboard/dashboard.orders.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/dashboard/qs": {
+      "filePath": "_dashboard/dashboard.qs.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/dashboard/suppliers": {
+      "filePath": "_dashboard/dashboard.suppliers.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/dashboard/users": {
+      "filePath": "_dashboard/dashboard.users.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/dashboard/": {
+      "filePath": "_dashboard/dashboard.index.tsx",
+      "parent": "/_dashboard"
     }
   }
 }

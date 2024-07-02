@@ -61,8 +61,6 @@ export function Navbar() {
 function UserDropdown() {
     const { isAuthenticated, user, logout } = useAuth()
 
-    console.log(user)
-
     return <DropdownMenu>
         <DropdownMenuTrigger>
             <Avatar className="w-8 h-8 border p-1 hover:border-primary">
@@ -87,12 +85,12 @@ function UserDropdown() {
                 : <>
                     <DropdownMenuItem asChild>
                         <Button size="sm" variant="ghost" className="flex mb-2 justify-start w-full rounded-[0.5rem]" >
-                            <Link to="/auth/login"> Iniciar Sesion </Link>
+                            <Link to="/login"> Iniciar Sesion </Link>
                         </Button>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Button size="sm" className="flex justify-start w-full rounded-[0.5rem] rounded-b-2xl">
-                            <Link to="/auth/register"> Crear Cuenta </Link>
+                            <Link to="/register"> Crear Cuenta </Link>
                         </Button>
                     </DropdownMenuItem>
                 </>

@@ -20,7 +20,7 @@ function RootLayout() {
     const pathname = useLocation({ select: (location) => location.pathname })
 
     return <div className='max-w-screen-xl mx-auto'>
-        {!pathname.includes("/auth") && <Navbar />}
+        {!(pathname === '/login' || pathname === '/register') && <Navbar />}
         <Outlet />
         <Toaster />
 
