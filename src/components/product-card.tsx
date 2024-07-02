@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
+import { AddToCartButton, FavoriteButton } from '@/components/cart'
 // shadcn
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { HeartIcon, ShoppingCartIcon, StarIcon } from 'lucide-react'
-import { toggleAddToCart, toggleFavorite } from '@/api/products'
+import { StarIcon } from 'lucide-react'
+import { Product } from '@/api/products'
 
 type ProductProps = {
     id: number,
@@ -14,14 +14,8 @@ type ProductProps = {
     price: number
 }
 
-export function ProductCard({
-    id,
-    name,
-    discount,
-    stars = 0,
-    people,
-    price,
-}: ProductProps) {
+export function ProductCard(product: Product) {
+    const { id, name, people, stars, discount, price } = product
 
     return <Card>
         <CardHeader>
@@ -60,17 +54,13 @@ export function ProductCard({
             <p className="text-2xl font-extrabold leading-tight"> ${price} </p>
 
             <div>
-                <Button size="icon" variant="ghost" onClick={() => toggleFavorite(id)} >
-                    <HeartIcon className='h-4 w-4' />
-                </Button>
-                <Button size="sm" onClick={() => toggleAddToCart(id)} >
-                    <ShoppingCartIcon className='mr-2 h-4 w-4' />
-                    Añadir
-                </Button>
+                <FavoriteButton productId={id} />
+                <AddToCartButton product={product} />
             </div>
         </CardFooter>
     </Card>
 }
+
 
 export function ProductCardHorizontal({
     id,
