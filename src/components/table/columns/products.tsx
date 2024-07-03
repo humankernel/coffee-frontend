@@ -1,8 +1,9 @@
-import type { ColumnDef } from "@tanstack/react-table"
-import { Product } from '@/api/products'
-import { UpdateProductForm } from "@/components/forms/product"
+import type { ColumnDef } from "@tanstack/react-table";
+import { Product } from "@/api/products";
+import { UpdateProductForm } from "@/components/forms/product";
+import { UpdateDialog } from "@/components/dialog";
 // shadcn
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,11 +11,9 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 export const columns: ColumnDef<Product>[] = [
     {
@@ -25,7 +24,9 @@ export const columns: ColumnDef<Product>[] = [
                     table.getIsAllPageRowsSelected() ||
                     (table.getIsSomePageRowsSelected() && "indeterminate")
                 }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
                 aria-label="Select all"
             />
         ),
@@ -41,19 +42,22 @@ export const columns: ColumnDef<Product>[] = [
     },
     {
         accessorKey: "id",
-        header: "id"
+        header: "id",
     },
     {
         accessorKey: "name",
-        header: ({ column }) =>
+        header: ({ column }) => (
             <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                }
             >
                 Nombre
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
+        ),
     },
     {
         accessorKey: "desc",
@@ -63,14 +67,14 @@ export const columns: ColumnDef<Product>[] = [
         accessorKey: "price",
         header: "Precio",
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("price"))
+            const amount = parseFloat(row.getValue("price"));
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-            }).format(amount)
+            }).format(amount);
 
-            return <div>{formatted}</div>
-        }
+            return <div>{formatted}</div>;
+        },
     },
     {
         accessorKey: "type",
@@ -78,7 +82,7 @@ export const columns: ColumnDef<Product>[] = [
     },
     {
         accessorKey: "acciones",
-        cell: ({ row }) =>
+        cell: ({ row }) => (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
@@ -90,30 +94,21 @@ export const columns: ColumnDef<Product>[] = [
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
-                        onClick={() => navigator.clipboard.writeText(row.original.id.toString())}
+                        onClick={() =>
+                            navigator.clipboard.writeText(
+                                row.original.id.toString(),
+                            )
+                        }
                     >
                         Copiar ID
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                        <UpdateDialog id={row.original.id} />
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <UpdateDialog title="Producto" >
+                            <UpdateProductForm id={row.original.id} />
+                        </UpdateDialog>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-    }
-]
-
-function UpdateDialog({ id }: { id: number }) {
-    return <Dialog>
-        <DialogTrigger>
-            Actualizar
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle>Actualizar Producto</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-                <UpdateProductForm id={id} />
-            </div>
-        </DialogContent>
-    </Dialog>
-}
+        ),
+    },
+];

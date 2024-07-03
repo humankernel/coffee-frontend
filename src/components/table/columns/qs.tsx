@@ -1,8 +1,8 @@
-import type { ColumnDef } from "@tanstack/react-table"
-import { QS } from '@/api/qs'
-import { UpdateQsForm } from "@/components/forms/qs"
+import type { ColumnDef } from "@tanstack/react-table";
+import { QS } from "@/api/qs";
+import { UpdateQsForm } from "@/components/forms/qs";
 // shadcn
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,11 +10,13 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { MoreHorizontal } from "lucide-react"
-
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CalendarIcon, MoreHorizontal } from "lucide-react";
+import { UpdateDialog } from "@/components/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 export const columns: ColumnDef<QS>[] = [
     {
@@ -25,7 +27,9 @@ export const columns: ColumnDef<QS>[] = [
                     table.getIsAllPageRowsSelected() ||
                     (table.getIsSomePageRowsSelected() && "indeterminate")
                 }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value) =>
+                    table.toggleAllPageRowsSelected(!!value)
+                }
                 aria-label="Select all"
             />
         ),
@@ -41,7 +45,7 @@ export const columns: ColumnDef<QS>[] = [
     },
     {
         accessorKey: "id",
-        header: "id"
+        header: "id",
     },
     {
         accessorKey: "desc",
@@ -50,14 +54,35 @@ export const columns: ColumnDef<QS>[] = [
     {
         accessorKey: "createdAt",
         header: "Fecha de Creacion",
+        cell: ({ row }) => (
+            <Popover>
+                <PopoverTrigger>
+                    <Button variant="ghost">
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {new Date(row.original.createdAt)
+                            .toISOString()
+                            .slice(0, 10)}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0">
+                    <Calendar
+                        mode="default"
+                        selected={row.original.createdAt}
+                    />
+                </PopoverContent>
+            </Popover>
+        )
     },
     {
         accessorKey: "type",
         header: "Tipo",
+        cell: ({ row }) => (
+            <Badge> {row.original.type} </Badge>
+        )
     },
     {
         accessorKey: "acciones",
-        cell: ({ row }) =>
+        cell: ({ row }) => (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
@@ -68,31 +93,21 @@ export const columns: ColumnDef<QS>[] = [
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                        onClick={() => navigator.clipboard.writeText(row.original.id.toString())}
-                    >
+                    <DropdownMenuItem onClick={() =>
+                        navigator.clipboard.writeText(
+                            row.original.id.toString(),
+                        )
+                    }>
                         Copiar ID
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                        <UpdateDialog id={row.original.id} />
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <UpdateDialog title="Queja/Sugerencia">
+                            <UpdateQsForm id={row.original.id} />
+                        </UpdateDialog>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-    }
-]
+        ),
+    },
+];
 
-function UpdateDialog({ id }: { id: number }) {
-    return <Dialog>
-        <DialogTrigger>
-            Actualizar
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-                <DialogTitle>Actualizar Queja o Sugerencia</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-                <UpdateQsForm id={id} />
-            </div>
-        </DialogContent>
-    </Dialog>
-}
