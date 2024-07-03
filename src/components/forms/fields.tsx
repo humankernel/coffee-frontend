@@ -1,283 +1,146 @@
+import { FormApi, type FieldApi } from "@tanstack/react-form";
+import { FieldInfo } from "@/lib/utils";
+import { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, useState } from "react";
+import { INGREDIENTS } from "@/constants";
 // shadcn
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { LoaderIcon } from "lucide-react";
 
-import { type FieldApi } from "@tanstack/react-form"
-import { FieldInfo } from "@/lib/utils"
-import { DollarSignIcon } from "lucide-react"
-import { useState } from "react"
-import { MultiSelect } from "../ui/multi-select"
-import { INGREDIENTS } from "@/constants"
-import { QsType } from "@/api/qs"
 
-type FieldParams = { field: FieldApi<any, any, any, any>, placeholder: string }
+type FieldParams = {
+    name: string
+    field: FieldApi<any, any, any, any>;
+};
 
-export function NameField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Nombre </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
+type InputParams =
+    InputHTMLAttributes<HTMLInputElement> &
+    FieldParams
+
+type TextAreaParams =
+    TextareaHTMLAttributes<HTMLTextAreaElement> &
+    FieldParams
+
+type SelectItem = { label: string, value: string, icon: string }
+type SelectFieldParams =
+    SelectHTMLAttributes<HTMLSelectElement> &
+    FieldParams &
+    { items: SelectItem[] }
+
+type MultiSelectFieldParams =
+    FieldParams &
+    { items: SelectItem[], selectedList?: string[], placeholder: string }
+
+
+export function SubmitForm({ form }: { form: FormApi<any, any> }) {
+    return <div className="mt-10 flex justify-between">
+        <Button variant="outline">Cancelar</Button>
+        <form.Subscribe
+            selector={(state) => [
+                state.canSubmit,
+                state.isSubmitting,
+            ]}
+            children={([canSubmit, isSubmitting]) => (
+                <Button
+                    type="submit"
+                    size="sm"
+                    disabled={!canSubmit}
+                >
+                    {isSubmitting
+                        ? <LoaderIcon className="h-4 w-4 animate-spin" />
+                        : "Aceptar"}
+                </Button>
+            )}
         />
-        <FieldInfo field={field} />
     </div>
 }
 
-
-export function AgeField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Edad </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            type="number"
-            onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function UsernameField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Nombre de Usuario </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function PasswordField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Contraseña </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onChange={(e) => field.handleChange(e.target.value)}
-            type='password'
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function RoleField({ field }: Omit<FieldParams, 'placeholder'>) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Role </Label>
-        <Select
-            name={field.name}
-            value={field.state.value}
-            onValueChange={(e) => field.handleChange(e)}
-        >
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select Role" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="manager">Manager</SelectItem>
-                <SelectItem value="almacenero">Almacenero</SelectItem>
-                <SelectItem value="supplier">Supplier</SelectItem>
-            </SelectContent>
-        </Select>
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function DescField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Descripcion </Label>
-        <Textarea
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function PriceField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Price </Label>
-        <div className="relative" >
-            <DollarSignIcon className="mr-2 h-4 w-4 absolute top-3 left-2 opacity-60" />
+export function InputField({ name, field, ...props }: InputParams) {
+    return (
+        <>
+            <Label htmlFor={field.name}> {name} </Label>
             <Input
+                {...props}
                 id={field.name}
                 name={field.name}
                 value={field.state.value}
-                type="number"
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder={placeholder}
-                className="pl-6"
             />
-        </div>
-        <FieldInfo field={field} />
-    </div>
+            <FieldInfo field={field} />
+        </>
+    )
 }
 
-export function FoodTypeField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Tipo de Comida </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
+export function TextAreaField({ name, field, ...props }: TextAreaParams) {
+    return (
+        <>
+            <Label htmlFor={field.name}> {name} </Label>
+            <Textarea
+                {...props}
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+            />
+            <FieldInfo field={field} />
+        </>
+    );
 }
 
-function Emoji({ emoji }: { emoji: string }) {
-    return <div>
-        {emoji}
-    </div>
+export function SelectField({ name, items, field, ...props }: SelectFieldParams) {
+    return (
+        <>
+            <Label htmlFor={field.name}> {name} </Label>
+            <Select
+                name={field.name}
+                value={field.state.value}
+                onValueChange={(e) => field.handleChange(e)}
+            >
+                <SelectTrigger>
+                    <SelectValue {...props} />
+                </SelectTrigger>
+                <SelectContent>
+                    {items.map(item =>
+                        <SelectItem value={item.value}>
+                            {item.label}
+                        </SelectItem>
+                    )}
+                </SelectContent>
+            </Select>
+            <FieldInfo field={field} />
+        </>
+    );
 }
 
-export function IngredientsField({ field, placeholder }: FieldParams) {
-    const [selected, setSelected] = useState<string[]>([]);
 
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Ingredientes </Label>
-        <MultiSelect
-            options={INGREDIENTS.map(ingredient => ({
-                ...ingredient,
-                icon: <Emoji emoji={ingredient.icon} />
-            }))}
-            onValueChange={setSelected}
-            defaultValue={selected}
-            placeholder="Selecciona los Ingredientes"
-            variant="inverted"
-            animation={2}
-            maxCount={3}
-        />
-        <div className="mt-4">
-            <h2 className="text-xl font-semibold">Ingredientes Seleccionados:</h2>
-            <ul className="list-disc list-inside">
-                {selected.map((ingredient) => (
-                    <li key={ingredient}>{ingredient}</li>
-                ))}
-            </ul>
-        </div>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
+export function MultiSelectField(
+    { name, items, selectedList, field, placeholder }: MultiSelectFieldParams
+) {
+    const [selected, setSelected] = useState<string[]>(selectedList ?? []);
 
-// FIX si o no
-export function SugarField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Azucar </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function SizeField({ field }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Tamaño </Label>
-        <Select
-            name={field.name}
-            value={field.state.value}
-            onValueChange={(e) => field.handleChange(e)}
-        >
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Seleccionar Tamaño" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="sm">Pequeño</SelectItem>
-                <SelectItem value="md">Mediano</SelectItem>
-                <SelectItem value="lg">Grande</SelectItem>
-            </SelectContent>
-        </Select>
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function TempField({ field }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Temperatura </Label>
-        <Select
-            name={field.name}
-            value={field.state.value}
-            onValueChange={(e) => field.handleChange(e)}
-        >
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Selecciona la Temperatura" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="cold">Frio</SelectItem>
-                <SelectItem value="hot">Caliente</SelectItem>
-            </SelectContent>
-        </Select>
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function DrinkTypeField({ field, placeholder }: FieldParams) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Tipo de Bebida </Label>
-        <Input
-            id={field.name}
-            name={field.name}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={placeholder}
-        />
-        <FieldInfo field={field} />
-    </div>
-}
-
-export function QsTypeField({ field }: Omit<FieldParams, 'placeholder'>) {
-    return <div className="grid gap-2">
-        <Label htmlFor={field.name}> Queja/Sugerencia </Label>
-        <Select
-            name={field.name}
-            value={field.state.value}
-            onValueChange={(e) => field.handleChange(e)}
-        >
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Selecciona Q/S" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value={QsType.complaint}>Queja</SelectItem>
-                <SelectItem value={QsType.suggestion}>Sugerencia</SelectItem>
-            </SelectContent>
-        </Select>
-        <FieldInfo field={field} />
-    </div>
+    return (
+        <>
+            <Label htmlFor={field.name}> {name} </Label>
+            <MultiSelect
+                options={items}
+                onValueChange={setSelected}
+                defaultValue={selected}
+                variant="inverted"
+                animation={2}
+                maxCount={3}
+                placeholder={placeholder}
+            />
+            <FieldInfo field={field} />
+        </>
+    );
 }
