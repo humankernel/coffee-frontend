@@ -1,127 +1,112 @@
 import { api } from "@/api";
-import { Search } from "@/routes/store";
+import { removeEmptyValues } from "@/lib/utils";
+import { Search } from "@/routes/_public/store";
 
 export enum ProductType {
-  food = "food",
-  drink = "drink",
-  raw = "raw",
+    food = "food",
+    drink = "drink",
 }
 
 export type Product = {
-  id: number;
-  name: string;
-  desc: string;
-  price: number;
-  type: ProductType;
-  discount: number;
-  stars: number;
-  people: number;
+    id: number;
+    name: string;
+    desc: string;
+    price: number;
+    type: ProductType;
+    discount: number;
+    stars: number;
+    people: number;
 };
 
 export type Food = Product & {
-  foodType: string;
-  ingredients: string[];
+    foodType: string;
+    ingredients: string[];
 };
 
 export enum Size {
-  sm = "sm",
-  md = "md",
-  lg = "lg",
+    sm = "sm",
+    md = "md",
+    lg = "lg",
 }
 
 export enum Temp {
-  cold = "cold",
-  hot = "hot",
+    cold = "cold",
+    hot = "hot",
 }
 
 export type Drink = Product & {
-  size: Size;
-  sugar: boolean;
-  temp: Temp;
-  drinkType: string;
+    size: Size;
+    sugar: boolean;
+    temp: Temp;
+    drinkType: string;
 };
 
-export type Raw = Product & {};
-
-export async function getProducts({
-  filter,
-  sort,
-  limit,
-}: Search): Promise<Product[]> {
-  // TODO:
-  const { data } = await api.get("/products");
-  return data;
+export async function getProducts(
+    params: Search,
+): Promise<(Product | Food | Drink)[]> {
+    const { data } = await api.get("/products", { params });
+    return data;
 }
 
-export async function deleteProduct(id: number): Promise<Product> {
-  const { data } = await api.delete<Product>(`/products/${id}`);
-  return data;
+export async function deleteProduct(
+    id: number,
+): Promise<Product | Food | Drink> {
+    const { data } = await api.delete<Product>(`/products/${id}`);
+    return data;
 }
 
-export async function getProduct(id: number): Promise<Product> {
-  const { data } = await api.get<Product>(`/products/${id}`);
-  return data;
+export async function getProduct(id: number): Promise<Product | Food | Drink> {
+    const { data } = await api.get<Product>(`/products/${id}`);
+    return data;
 }
 
 // FIX:
 export async function insertProduct(
-  product: Omit<Food, "id"> | Omit<Drink, "id"> | Omit<Raw, "id">,
-): Promise<Food | Drink | Raw> {
-  product = {
-    ...product,
-    price: Number(product.price),
-  };
+    product: Omit<Food | Drink, "id">,
+): Promise<Food | Drink> {
+    const productToSend = removeEmptyValues(product);
+    if (product.price) productToSend.price = Number(product.price);
 
-  if (product.type === "food") {
-    product = {
-      ...product,
-      ingredients: product.ingredients.split(","),
-    };
-    const { data } = await api.post("/products/food", product);
-    return data;
-  }
+    if (product.type === ProductType.food) {
+        productToSend.ingredients = product.ingredients.split(",");
+        const { data } = await api.post<Food>("/products/food", product);
+        return data;
+    }
 
-  if (product.type === "drink") {
-    product = {
-      ...product,
-      sugar: true,
-    };
+    if (product.type === ProductType.drink) {
+        productToSend.sugar = false;
+        const { data } = await api.post<Drink>("/products/drink", product);
+        return data;
+    }
 
-    const { data } = await api.post("/products/drink", product);
-    return data;
-  }
-
-  if (product.type === "raw") {
-    const { data } = await api.post("/products/raw", product);
-    return data;
-  }
-
-  throw new Error("type does not exists");
+    throw new Error("type does not exists");
 }
 
 // FIX:
 export async function updateProduct(
-  id: number,
-  product: Partial<Product>,
-): Promise<Product> {
-  product = {
-    ...product,
-    price: Number(product.price),
-  };
-  console.log(product);
-  if (product.type === ProductType.food) {
-    const { data } = await api.patch<Product>(`/products/food/${id}`, product);
-    return data;
-  } else if (product.type === ProductType.drink) {
-    product = {
-      ...product,
-      sugar: false,
-    };
-    console.log(product);
-    const { data } = await api.patch<Product>(`/products/drink/${id}`, product);
-    return data;
-  } else if (product.type === ProductType.raw) {
-    const { data } = await api.patch<Product>(`/products/raw/${id}`, product);
-    return data;
-  }
+    id: number,
+    product: Partial<Drink | Food>,
+) {
+    const productToSend = removeEmptyValues(product);
+    if (product.price) productToSend.price = Number(product.price);
+
+    if (productToSend.type === ProductType.food) {
+        productToSend.ingredients = product.ingredients.split(",");
+        const { data } = await api.patch<Food>(
+            `/products/food/${id}`,
+            productToSend,
+        );
+        return data;
+    }
+
+    if (product.type === ProductType.drink) {
+        productToSend.sugar = false;
+        const { data } = await api.patch<Drink>(
+            `/products/drink/${id}`,
+            productToSend,
+        );
+        return data;
+    }
+
+    throw new Error("type does not exists");
 }

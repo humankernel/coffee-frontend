@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    background-image: url('src/assets/background-pattern.svg');
+    background-image: url("/bg.svg");
     background-repeat: no-repeat;
     background-position: bottom left;
     background-size: contain;
@@ -40,19 +40,19 @@ body {
         --gradient: #eacda3;
         --background: 38 40.95% 6.24%;
         --foreground: 38 6.3% 98.9%;
-        --muted: 38 31.5% 23.400000000000002%;
+        --muted: 38 31.5% 23.402%;
         --muted-foreground: 38 6.3% 57.8%;
         --popover: 38 52.4% 10.14%;
         --popover-foreground: 38 6.3% 98.9%;
         --card: 38 52.4% 10.14%;
         --card-foreground: 38 6.3% 98.9%;
-        --border: 38 31.5% 23.400000000000002%;
-        --input: 38 31.5% 23.400000000000002%;
+        --border: 38 31.5% 23.402%;
+        --input: 38 31.5% 23.402%;
         --primary: 38 63% 78%;
         --primary-foreground: 38 6.3% 7.800000000000001%;
-        --secondary: 38 31.5% 23.400000000000002%;
+        --secondary: 38 31.5% 23.402%;
         --secondary-foreground: 38 6.3% 98.9%;
-        --accent: 38 31.5% 23.400000000000002%;
+        --accent: 38 31.5% 23.402%;
         --accent-foreground: 38 6.3% 98.9%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 38 6.3% 98.9%;
