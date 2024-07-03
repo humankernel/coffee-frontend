@@ -1,17 +1,3 @@
-// shadcn
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { SearchIcon, PlusIcon, XIcon } from "lucide-react"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Card } from "@/components/ui/card"
-
 import {
     type ColumnDef,
     flexRender,
@@ -22,27 +8,50 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table"
-import { useState } from "react"
+} from "@tanstack/react-table";
+import { useState } from "react";
+// shadcn
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
+import { SearchIcon, PlusIcon, XIcon } from "lucide-react";
+
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
-    filterBy: keyof TData
+    name: string
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    filterBy: keyof TData;
     onDelete?: (id: number) => void;
-    insertForm?: React.ReactNode
+    insertForm?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
+    name,
     columns,
     data,
     filterBy,
     onDelete,
-    insertForm
+    insertForm,
 }: DataTableProps<TData, TValue>) {
-    const [sorting, setSorting] = useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-    const [rowSelection, setRowSelection] = useState({})
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [rowSelection, setRowSelection] = useState({});
 
     const table = useReactTable({
         data,
@@ -55,41 +64,51 @@ export function DataTable<TData, TValue>({
         getFilteredRowModel: getFilteredRowModel(),
         onRowSelectionChange: setRowSelection,
         state: { sorting, columnFilters, rowSelection },
-    })
+    });
 
     const handleDelete = () => {
         if (onDelete && data) {
-            const idxs = Object.keys(rowSelection).map(Number)
-            for (const idx of idxs)
-                if (data[idx]?.id) onDelete(data[idx]?.id);
+            const idxs = Object.keys(rowSelection).map(Number);
+            for (const idx of idxs) if (data[idx]?.id) onDelete(data[idx]?.id);
         }
-    }
+    };
 
     return (
         <Card>
-            <div className="flex items-center p-4 gap-4">
+            <div className="flex items-center gap-4 p-4">
                 <div className="relative">
                     <Input
                         placeholder={`Filtrar por ${filterBy as string}`}
-                        value={(table.getColumn(filterBy as string)?.getFilterValue() as string) ?? ""}
+                        value={
+                            (table
+                                .getColumn(filterBy as string)
+                                ?.getFilterValue() as string) ?? ""
+                        }
                         onChange={(event) =>
-                            table.getColumn(filterBy as string)?.setFilterValue(event.target.value)
+                            table
+                                .getColumn(filterBy as string)
+                                ?.setFilterValue(event.target.value)
                         }
                         className="max-w-lg pl-8"
                     />
-                    <SearchIcon size={15} className="absolute top-3 left-2" />
+                    <SearchIcon size={15} className="absolute left-2 top-3" />
                 </div>
                 <div className="flex-1 text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} de{" "}
-                    {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
+                    {table.getFilteredRowModel().rows.length} fila(s)
+                    seleccionadas.
                 </div>
-                {onDelete &&
-                    <Button onClick={handleDelete} size="sm" variant="secondary">
-                        <XIcon className="mr-2 w-4 h-4" />
+                {onDelete && (
+                    <Button
+                        onClick={handleDelete}
+                        size="sm"
+                        variant="secondary"
+                    >
+                        <XIcon className="mr-2 h-4 w-4" />
                         Eliminar
                     </Button>
-                }
-                <InsertDialog form={insertForm} />
+                )}
+                <InsertDialog name={name} form={insertForm} />
             </div>
             <Table>
                 <TableHeader>
@@ -101,11 +120,12 @@ export function DataTable<TData, TValue>({
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
+                                                header.column.columnDef
+                                                    .header,
+                                                header.getContext(),
                                             )}
                                     </TableHead>
-                                )
+                                );
                             })}
                         </TableRow>
                     ))}
@@ -119,14 +139,20 @@ export function DataTable<TData, TValue>({
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext(),
+                                        )}
                                     </TableCell>
                                 ))}
                             </TableRow>
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
+                            <TableCell
+                                colSpan={columns.length}
+                                className="h-24 text-center"
+                            >
                                 No resultados
                             </TableCell>
                         </TableRow>
@@ -151,26 +177,24 @@ export function DataTable<TData, TValue>({
                     Siguiente
                 </Button>
             </div>
-        </Card >
-    )
+        </Card>
+    );
 }
 
-
-function InsertDialog({ form }: { form: React.ReactNode }) {
-    return <Dialog>
-        <DialogTrigger asChild>
-            <Button size="sm">
-                <PlusIcon className='mr-2 w-4 h-4' /> Añadir
-            </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] p-4">
-            <DialogHeader>
-                <DialogTitle>Insertar //name//</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-                {form}
-            </div>
-        </DialogContent>
-    </Dialog>
+function InsertDialog({ name, form }: { name: string, form: React.ReactNode }) {
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button size="sm">
+                    <PlusIcon className="mr-2 h-4 w-4" /> Añadir
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="p-4 sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Insertar {name}</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">{form}</div>
+            </DialogContent>
+        </Dialog>
+    );
 }
-
