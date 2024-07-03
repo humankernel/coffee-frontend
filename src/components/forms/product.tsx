@@ -38,7 +38,7 @@ export function InsertProductForm() {
         mutationFn: (values: any) => insertProduct({ ...values, type }),
         onSuccess: () => {
             toast.success("Producto insertado correctamente");
-            queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
         },
         onError: () => toast.error("Error al insertar el Producto"),
     });
@@ -156,21 +156,6 @@ export function InsertProductForm() {
                                             items={SIZES}
                                             field={field}
                                             placeholder="sm, md, lg"
-                                            required
-                                        />
-                                    )}
-                                />
-
-                                {/* DRINK SUGAR */}
-                                <form.Field
-                                    name="sugar"
-                                    validators={sugarValidators}
-                                    children={(field) => (
-                                        <InputField
-                                            name="Azucar"
-                                            type="checkbox"
-                                            field={field}
-                                            className="h-4 w-4"
                                             required
                                         />
                                     )}

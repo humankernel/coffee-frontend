@@ -49,11 +49,19 @@ function Profits() {
         queryFn: () => getSales(),
     });
 
-    const totalProfit = useMemo(() =>
-        sales ? sales
+    const totalProfit = useMemo(() => {
+        if (!sales) return 0
+
+        const prices = sales
             .map(({ product, amount }) => product.price * amount)
-            .reduce((prev, curr) => prev + curr)
-            : 0
+
+        console.log("pricesss", prices)
+
+        if (prices.length > 0)
+            return prices.reduce((prev, curr) => prev + curr)
+
+        return 0
+    }
         , [sales])
 
     return (
@@ -88,7 +96,7 @@ function UsersCard() {
                 <ActivityIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+{users?.length}</div>
+                <div className="text-2xl font-bold">+{users?.length ?? 0}</div>
                 <p className="text-xs text-muted-foreground">
                     +{lastMonthGrowPercent}% since last month
                 </p>

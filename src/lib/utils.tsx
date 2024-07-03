@@ -18,7 +18,8 @@ export function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
     );
 }
 
-export function mostFrequent(arr) {
+export function mostFrequent(arr: any[]) {
+    if (!arr) return ""
     const counts = {};
 
     for (let num of arr)

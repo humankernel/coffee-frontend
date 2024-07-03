@@ -64,8 +64,10 @@ export async function getProduct(id: number): Promise<Product | Food | Drink> {
 export async function insertProduct(
     product: Omit<Food | Drink, "id">,
 ): Promise<Food | Drink> {
+    console.log("before-insert", product)
     const productToSend = removeEmptyValues(product);
     if (product.price) productToSend.price = Number(product.price);
+    console.log("before-insert", productToSend)
 
     if (product.type === ProductType.food) {
         productToSend.ingredients = product.ingredients.split(",");
@@ -75,6 +77,7 @@ export async function insertProduct(
 
     if (product.type === ProductType.drink) {
         productToSend.sugar = false;
+        console.log("before-insert", productToSend)
         const { data } = await api.post<Drink>("/products/drink", product);
         return data;
     }

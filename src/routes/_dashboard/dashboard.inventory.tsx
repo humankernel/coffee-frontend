@@ -19,19 +19,18 @@ function InventoryPage() {
     const { data } = useSuspenseQuery(productsOptions({ sort: Sort.newest }));
     const queryClient = useQueryClient();
 
-    const { mutate, isSuccess, isError } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: ["delete-product"],
         mutationFn: deleteProduct,
+        onSuccess: () => {
+            toast.success("Producto correctamente eliminado");
+            queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
+        },
+        onError: () => {
+            toast.error("Error al eliminar el producto")
+        }
     });
 
-    if (isSuccess) {
-        toast.success("Producto correctamente eliminado");
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-    }
-
-    if (isError) {
-        toast.error("Error al eliminar el producto")
-    }
 
     return (
         <main className="container mx-auto py-4">
