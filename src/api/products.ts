@@ -15,6 +15,7 @@ export type Product = {
     discount: number;
     stars: number;
     people: number;
+    createdAt: Date;
 };
 
 export type Food = Product & {
@@ -46,11 +47,17 @@ export async function getProducts(
     return data;
 }
 
-export async function deleteProduct(
-    id: number,
-): Promise<Product | Food | Drink> {
-    const { data } = await api.delete<Product>(`/products/${id}`);
-    return data;
+export async function deleteProduct(id: number): Promise<Food | Drink> {
+    const { data: product } = await api.get<Product>(`/products/${id}`);
+
+    if (product.type === ProductType.food) {
+        const { data } = await api.delete<Food>(`/products/food/${id}`);
+        return data;
+    }
+    if (product.type === ProductType.drink) {
+        const { data } = await api.delete<Drink>(`/products/drink/${id}`);
+        return data;
+    }
 }
 
 export async function getProduct(id: number): Promise<Product | Food | Drink> {
@@ -59,11 +66,13 @@ export async function getProduct(id: number): Promise<Product | Food | Drink> {
 }
 
 export async function insertFood(food: Omit<Food, "id">): Promise<Food> {
+    food.type = "food";
     const { data } = await api.post<Food>("/products/food", food);
     return data;
 }
 
 export async function insertDrink(drink: Omit<Drink, "id">): Promise<Drink> {
+    drink.type = "drink";
     const { data } = await api.post<Drink>("/products/drink", drink);
     return data;
 }

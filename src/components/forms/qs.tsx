@@ -117,7 +117,7 @@ export function UpdateQsForm({ id }: { id: number }) {
                         )}
                     />
 
-                    {/* Type */}
+                    {/* TYPE */}
                     <form.Field
                         name="type"
                         validators={qsTypeValidators}

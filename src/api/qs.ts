@@ -1,4 +1,5 @@
 import { api } from "@/api";
+import { removeEmptyValues } from "@/lib/utils";
 
 export enum QsType {
     complaint = "complaint",
@@ -28,7 +29,9 @@ export async function getQsById(id: number): Promise<QS> {
 }
 
 export async function updateQs(id: number, qs: Partial<QS>): Promise<QS> {
-    const { data } = await api.patch<QS>(`/qs/${id}`, qs);
+    const qaToSend = removeEmptyValues(qs);
+    console.log({ id, qaToSend });
+    const { data } = await api.patch<QS>(`/qs/${id}`, qaToSend);
     return data;
 }
 
