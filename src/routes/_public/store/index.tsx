@@ -63,8 +63,8 @@ function StorePage() {
                 <div className="mb-4 flex items-end justify-between space-y-4 sm:space-y-0 md:mb-8">
                     <Searchbar />
                     <div className="flex gap-2">
-                        <FilterDropdown />
-                        <SortDropdown />
+                        {/* <FilterDropdown /> */}
+                        {/* <SortDropdown /> */}
                     </div>
                 </div>
 
