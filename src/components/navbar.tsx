@@ -21,7 +21,7 @@ type Props = {
 
 export function Navbar({ links }: Props) {
     const pathname = useLocation({ select: (location) => location.pathname });
-    const { user } = useAuth()
+    const { isAuthenticated, user } = useAuth()
 
     return (
         <div className="px-4 py-2 md:px-10 md:py-4">
@@ -31,7 +31,7 @@ export function Navbar({ links }: Props) {
                 </Link>
                 <nav className="hidden sm:block">
                     {links.map((link) => {
-                        if (!link.role || link.role === user?.role)
+                        if (!link.role || (isAuthenticated && link.role === user?.role))
                             return <Link to={link.url} key={link.label}>
                                 <Button
                                     variant="link"
