@@ -1,6 +1,5 @@
 import { api } from "@/api";
 import { User } from "@/api/users";
-import { sleep } from "@/lib/utils";
 import { Search } from "@/routes/_public/store";
 
 type Sale = {
