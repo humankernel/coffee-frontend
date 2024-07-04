@@ -15,6 +15,7 @@ export type User = {
     username: string;
     password: string;
     role: Role;
+    isActive: boolean
 };
 
 export async function getUser(id: number): Promise<User> {

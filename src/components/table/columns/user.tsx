@@ -74,6 +74,14 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }) => <Badge>{row.original.role}</Badge>,
     },
     {
+        accessorKey: "isActive",
+        header: "Activo",
+        cell: ({ row }) =>
+            <Badge variant={!row.original.isActive ? "destructive" : "default"}>
+                {row.original.isActive ? "active" : "inactive"}
+            </Badge>,
+    },
+    {
         accessorKey: "acciones",
         cell: ({ row }) => (
             <DropdownMenu>
