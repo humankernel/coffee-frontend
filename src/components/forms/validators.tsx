@@ -100,24 +100,13 @@ export const foodTypeValidators = {
 
 export const ingredientsValidators = {
     onChange: z
-        .array(z.string())
-        /* .string()
-        .transform((value) => value.split(","))
-        .pipe(z.string().array()) */,
+        .array(z.string()),
     onChangeAsyncDebounceMs: 500,
 };
 
 export const sizeValidators = {
     onChange: z
         .nativeEnum(Size)
-        .or(z.string().length(0)),
-    onChangeAsyncDebounceMs: 500,
-};
-
-// FIX:
-export const sugarValidators = {
-    onChange: z
-        .string()
         .or(z.string().length(0)),
     onChangeAsyncDebounceMs: 500,
 };

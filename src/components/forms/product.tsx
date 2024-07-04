@@ -9,7 +9,6 @@ import {
     nameValidations,
     priceValidators,
     sizeValidators,
-    sugarValidators,
     tempValidators,
 } from "@/components/forms/validators";
 import {
@@ -37,8 +36,10 @@ export function InsertProductForm() {
         mutationKey: ["insert-product"],
         mutationFn: async (values: unknown) => {
             const productToSend = removeEmptyValues(values);
+
             if (type === ProductType.food)
                 await insertFood(productToSend as Food)
+
             else if (type === ProductType.drink)
                 await insertDrink(productToSend as Drink)
         },

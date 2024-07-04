@@ -115,6 +115,7 @@ export const columns: ColumnDef<Product>[] = [
         cell: ({ row }) => <Stars stars={row.original.stars} />
     },
     { accessorKey: "people", header: "Reseñas", cell: ({ row }) => <span> +{row.original.people} </span> },
+    { accessorKey: "createdAt", header: "Creado" },
     {
         accessorKey: "acciones",
         cell: ({ row }) => (
