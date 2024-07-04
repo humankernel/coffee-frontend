@@ -10,8 +10,7 @@ import {
     roleValidators,
 } from "@/components/forms/validators";
 // shadcn
-import { Button } from "@/components/ui/button";
-import { Role, User, getUser, insertUser, updateUser } from "@/api/users";
+import { User, getUser, insertUser, updateUser } from "@/api/users";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ROLES } from "@/constants";

@@ -31,7 +31,6 @@ export function Navbar({ links }: Props) {
                 </Link>
                 <nav className="hidden sm:block">
                     {links.map((link) => {
-                        console.log(link)
                         if (!link.role || link.role === user?.role)
                             return <Link to={link.url} key={link.label}>
                                 <Button

@@ -100,10 +100,10 @@ export const foodTypeValidators = {
 
 export const ingredientsValidators = {
     onChange: z
-        .string()
+        .array(z.string())
+        /* .string()
         .transform((value) => value.split(","))
-        .pipe(z.string().array())
-        .or(z.string().length(0)),
+        .pipe(z.string().array()) */,
     onChangeAsyncDebounceMs: 500,
 };
 

@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { ProductType, getProduct, insertProduct, updateProduct } from "@/api/products";
+import { Drink, Food, ProductType, Size, Temp, getProduct, insertDrink, insertFood, updateDrink, updateFood, updateProduct } from "@/api/products";
 import {
     descValidations,
     drinkValidators,
@@ -20,22 +20,28 @@ import {
     SubmitForm,
 } from "@/components/forms/fields";
 import { useState } from "react";
-
-// shadcn
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { INGREDIENTS, SIZES, TEMPS } from "@/constants";
 import { Sort } from "@/routes/_public/store";
+// shadcn
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
+import { removeEmptyValues } from "@/lib/utils";
 
 export function InsertProductForm() {
-    const [type, setType] = useState(ProductType.food);
+    const [type, setType] = useState<string>(ProductType.food);
     const queryClient = useQueryClient();
 
     const { mutateAsync } = useMutation({
         mutationKey: ["insert-product"],
-        mutationFn: (values: any) => insertProduct({ ...values, type }),
+        mutationFn: async (values: unknown) => {
+            const productToSend = removeEmptyValues(values);
+            if (type === ProductType.food)
+                await insertFood(productToSend as Food)
+            else if (type === ProductType.drink)
+                await insertDrink(productToSend as Drink)
+        },
         onSuccess: () => {
             toast.success("Producto insertado correctamente");
             queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
@@ -45,10 +51,15 @@ export function InsertProductForm() {
 
     const form = useForm({
         defaultValues: {
-            name: "", desc: "", price: "", food_type: "", ingredients: "",
-            size: "", sugar: "", temp: "", drink_type: "",
+            name: "", desc: "", price: 0, discount: 0, stars: 0, people: 0,
+            type: ProductType.food,
+            foodType: "", ingredients: [],
+            size: Size.sm, temp: Temp.hot, drinkType: "",
         },
-        onSubmit: async ({ value }) => mutateAsync(value),
+        onSubmit: ({ value }) => {
+            console.log(value)
+            mutateAsync(value)
+        },
         validatorAdapter: zodValidator,
     });
 
@@ -109,16 +120,17 @@ export function InsertProductForm() {
                     />
 
                     {/* TYPE */}
-                    <Tabs value={type} onValueChange={(v) => setType(v)}>
+                    <Tabs value={type}
+                        onValueChange={(v) => setType(v)}>
                         <TabsList>
-                            <TabsTrigger value="food">Comida</TabsTrigger>
-                            <TabsTrigger value="drink">Bebida</TabsTrigger>
+                            <TabsTrigger value={ProductType.food}>Comida</TabsTrigger>
+                            <TabsTrigger value={ProductType.drink}>Bebida</TabsTrigger>
                         </TabsList>
                         <TabsContent value="food">
                             <div className="mt-8 grid w-full items-center gap-4">
                                 {/* FOOD TYPE */}
                                 <form.Field
-                                    name="food_type"
+                                    name="foodType"
                                     validators={foodTypeValidators}
                                     children={(field) => (
                                         <InputField
@@ -155,7 +167,6 @@ export function InsertProductForm() {
                                             name="Tamaño"
                                             items={SIZES}
                                             field={field}
-                                            placeholder="sm, md, lg"
                                             required
                                         />
                                     )}
@@ -177,7 +188,7 @@ export function InsertProductForm() {
 
                                 {/* DRINK TYPE */}
                                 <form.Field
-                                    name="drink_type"
+                                    name="drinkType"
                                     validators={drinkValidators}
                                     children={(field) => (
                                         <InputField
@@ -208,8 +219,13 @@ export function UpdateProductForm({ id }: { id: number }) {
 
     const { mutateAsync } = useMutation({
         mutationKey: [id, "update-product"],
-        mutationFn: (value: unknown) =>
-            updateProduct(id, { ...value, type: data?.type }),
+        mutationFn: async (values: unknown) => {
+            const productToSend = removeEmptyValues(values);
+            if (data?.type === ProductType.food)
+                await updateFood(id, productToSend as Food)
+            else if (data?.type === ProductType.drink)
+                await updateDrink(id, productToSend as Drink)
+        },
         onSuccess: () => {
             toast.success("Producto actualizado correctamente");
             queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
@@ -219,8 +235,10 @@ export function UpdateProductForm({ id }: { id: number }) {
 
     const form = useForm({
         defaultValues: {
-            name: "", desc: "", price: "", food_type: "", ingredients: "",
-            size: "", sugar: "", temp: "", drink_type: "",
+            name: "", desc: "", price: 0, discount: 0, stars: 0, people: 0,
+            type: ProductType.food,
+            foodType: "", ingredients: [],
+            size: Size.sm, temp: Temp.hot, drinkType: "",
         },
         onSubmit: async ({ value }) => mutateAsync(value),
         validatorAdapter: zodValidator,
@@ -228,13 +246,11 @@ export function UpdateProductForm({ id }: { id: number }) {
 
     return (
         <ScrollArea className="max-h-[80vh] p-2">
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    form.handleSubmit();
-                }}
-            >
+            <form onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit();
+            }} >
                 <div className="grid w-full items-center gap-4 p-1">
                     {/* NAME */}
                     <form.Field
@@ -286,13 +302,13 @@ export function UpdateProductForm({ id }: { id: number }) {
                             <div className="mt-8 grid w-full items-center gap-4">
                                 {/* FOOD TYPE */}
                                 <form.Field
-                                    name="food_type"
+                                    name="foodType"
                                     validators={foodTypeValidators}
                                     children={(field) => (
                                         <InputField
                                             name="Tipo de Comida"
                                             field={field}
-                                            placeholder={""}
+                                            placeholder={data?.foodType ?? ""}
                                         />
                                     )}
                                 />
@@ -326,20 +342,6 @@ export function UpdateProductForm({ id }: { id: number }) {
                                     )}
                                 />
 
-                                {/* DRINK SUGAR */}
-                                <form.Field
-                                    name="sugar"
-                                    validators={sugarValidators}
-                                    children={(field) => (
-                                        <InputField
-                                            name="Azucar"
-                                            type="checkbox"
-                                            field={field}
-                                            placeholder=""
-                                        />
-                                    )}
-                                />
-
                                 {/* DRINK TEMP */}
                                 <form.Field
                                     name="temp"
@@ -355,12 +357,13 @@ export function UpdateProductForm({ id }: { id: number }) {
 
                                 {/* DRINK TYPE */}
                                 <form.Field
-                                    name="drink_type"
+                                    name="drinkType"
                                     validators={drinkValidators}
                                     children={(field) => (
                                         <InputField
                                             name="Tipo de Bebida"
                                             field={field}
+                                            placeholder={data?.drinkType ?? ""}
                                         />
                                     )}
                                 />
