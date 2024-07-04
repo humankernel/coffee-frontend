@@ -18,11 +18,11 @@ export function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
     );
 }
 
-export function mostFrequent(arr: any[]) {
+export function mostFrequent(arr: unknown[]) {
     if (!arr) return ""
     const counts = {};
 
-    for (let num of arr)
+    for (const num of arr)
         counts[num] = (counts[num] || 0) + 1;
 
     const maxCount = Math.max(...Object.values(counts));
@@ -32,9 +32,6 @@ export function mostFrequent(arr: any[]) {
 
     return mostFrequent;
 }
-
-export const sleep = (delay: number) =>
-    new Promise((resolve) => setTimeout(resolve, delay))
 
 export function removeEmptyValues<T>(obj: T): T {
     const newObj = { ...obj }

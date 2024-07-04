@@ -25,12 +25,13 @@ function UsersPage() {
             toast.success("Usuario correctamente eliminado");
             queryClient.invalidateQueries({ queryKey: ["users"] });
         },
-        onError: () => toast.error("Error al eliminar el usuario"),
+        onError: () => toast.error("Error al eliminar el usuario")
     });
 
     return (
         <div className="container mx-auto py-4">
             <DataTable
+                name="Usuario"
                 columns={columns}
                 data={data ?? []}
                 filterBy="username"

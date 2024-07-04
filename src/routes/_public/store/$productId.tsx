@@ -23,7 +23,7 @@ function ProductPage() {
                     <img
                         src="/coffee.jpg"
                         alt={data.name}
-                        className="h-[400px] md:h-[600px] rounded-sm"
+                        className="h-[350px] md:h-[350px] rounded-sm"
                     />
                 </div>
 

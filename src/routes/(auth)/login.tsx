@@ -16,6 +16,7 @@ import { useAuth } from "@/context/auth";
 import { z } from "zod";
 import { toast } from "sonner";
 import { InputField } from "@/components/forms/fields";
+import { AxiosError } from "axios";
 
 const fallback = "/" as const;
 
@@ -44,8 +45,9 @@ export function LoginPage() {
                 await router.invalidate();
                 await navigate({ to: search.redirect || fallback });
             } catch (error) {
-                // toast.error("Ocurrio un error al iniciar sesion")
-                toast.error(error?.message);
+                if (error instanceof AxiosError)
+                    toast.error(error.response?.data?.message)
+                else toast.error("Error al iniciar sesion");
             }
         },
         validatorAdapter: zodValidator,

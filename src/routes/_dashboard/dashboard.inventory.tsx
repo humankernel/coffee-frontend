@@ -31,7 +31,6 @@ function InventoryPage() {
         }
     });
 
-
     return (
         <main className="container mx-auto py-4">
             <DataTable
