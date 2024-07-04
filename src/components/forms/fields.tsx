@@ -1,7 +1,6 @@
 import { FormApi, type FieldApi } from "@tanstack/react-form";
 import { FieldInfo } from "@/lib/utils";
 import { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, useState } from "react";
-import { INGREDIENTS } from "@/constants";
 // shadcn
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -39,30 +38,22 @@ type SelectFieldParams =
 
 type MultiSelectFieldParams =
     FieldParams &
-    { items: SelectItem[], selectedList?: string[], placeholder: string }
+    { items: SelectItem[], placeholder: string }
 
 
 export function SubmitForm({ form }: { form: FormApi<any, any> }) {
-    return <div className="mt-10 flex justify-between">
-        <Button variant="outline">Cancelar</Button>
-        <form.Subscribe
-            selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-            ]}
-            children={([canSubmit, isSubmitting]) => (
-                <Button
-                    type="submit"
-                    size="sm"
-                    disabled={!canSubmit}
-                >
+    return <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting,]}
+        children={([canSubmit, isSubmitting]) => (
+            <div className="flex justify-end">
+                <Button type="submit" size="sm" disabled={!canSubmit} >
                     {isSubmitting
                         ? <LoaderIcon className="h-4 w-4 animate-spin" />
                         : "Aceptar"}
                 </Button>
-            )}
-        />
-    </div>
+            </div>
+        )}
+    />
 }
 
 export function InputField({ name, field, ...props }: InputParams) {
@@ -111,7 +102,7 @@ export function SelectField({ name, items, field, ...props }: SelectFieldParams)
                 </SelectTrigger>
                 <SelectContent>
                     {items.map(item =>
-                        <SelectItem value={item.value}>
+                        <SelectItem key={item.value} value={item.value}>
                             {item.label}
                         </SelectItem>
                     )}
@@ -124,17 +115,15 @@ export function SelectField({ name, items, field, ...props }: SelectFieldParams)
 
 
 export function MultiSelectField(
-    { name, items, selectedList, field, placeholder }: MultiSelectFieldParams
+    { name, items, field, placeholder }: MultiSelectFieldParams
 ) {
-    const [selected, setSelected] = useState<string[]>(selectedList ?? []);
-
     return (
         <>
             <Label htmlFor={field.name}> {name} </Label>
             <MultiSelect
                 options={items}
-                onValueChange={setSelected}
-                defaultValue={selected}
+                onValueChange={v => field.handleChange(v)}
+                defaultValue={field.state.value}
                 variant="inverted"
                 animation={2}
                 maxCount={3}
