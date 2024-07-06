@@ -18,6 +18,7 @@ import { z } from "zod";
 import { useAuth } from "@/context/auth";
 import { toast } from "sonner";
 import { InputField } from "@/components/forms/fields";
+import { AxiosError } from "axios";
 
 const fallback = "/" as const;
 
@@ -39,14 +40,15 @@ export function RegisterPage() {
     const search = Route.useSearch();
 
     const form = useForm({
-        defaultValues: { name: "", age: "", username: "", password: "" },
+        defaultValues: { name: "", age: 0, username: "", password: "" },
         onSubmit: async ({ value }) => {
             try {
                 await register(value);
                 await router.invalidate();
                 await navigate({ to: search.redirect || fallback });
             } catch (error) {
-                console.error(error);
+                if (error instanceof AxiosError)
+                    toast.error(error.response?.data?.message)
                 toast.error("Ocurrio un error al registrarse");
             }
         },
@@ -64,13 +66,11 @@ export function RegisterPage() {
                         </p>
                     </div>
 
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            form.handleSubmit();
-                        }}
-                    >
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        form.handleSubmit();
+                    }} >
                         <div className="grid gap-4">
                             {/* NAME */}
                             <form.Field
@@ -144,7 +144,7 @@ export function RegisterPage() {
                         </div>
                         <div className="mt-4 text-center text-sm">
                             Ya tienes una cuenta?{" "}
-                            <Link to="/register" className="underline">
+                            <Link to="/login" className="underline">
                                 Loguearse
                             </Link>
                         </div>
@@ -153,7 +153,7 @@ export function RegisterPage() {
             </div>
             <div className="hidden bg-muted lg:block">
                 <img
-                    src="/register.svg"
+                    src="coffee.jpg"
                     alt="Image"
                     width="1920"
                     height="1080"

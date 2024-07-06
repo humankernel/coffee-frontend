@@ -64,13 +64,11 @@ export function LoginPage() {
                         </p>
                     </div>
 
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            form.handleSubmit();
-                        }}
-                    >
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        form.handleSubmit();
+                    }} >
                         <div className="grid gap-4">
                             {/* USERNAME */}
                             <form.Field
@@ -126,7 +124,7 @@ export function LoginPage() {
             </div>
             <div className="hidden bg-muted lg:block">
                 <img
-                    src="/login.svg"
+                    src="coffee.jpg"
                     alt="Image"
                     width="1920"
                     height="1080"
