@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/context/auth";
-import { makeSale } from "@/api/sales";
+import { createSale } from "@/api/sales";
 import { redirect } from "@tanstack/react-router";
 import { useCallback } from "react";
 
@@ -108,7 +108,7 @@ export function CartDropdown() {
         mutationKey: ["sales"],
         mutationFn: () => {
             const products = cart.map(item => ({ id: item.id, count: item.count }))
-            return makeSale(user!.sub, products)
+            return createSale(user!.sub, products)
         }
     });
 

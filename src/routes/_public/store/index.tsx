@@ -42,7 +42,7 @@ const searchSchema = z.object({
     limit: z.number().optional()
 });
 
-export type Search = z.infer<typeof searchSchema>;
+export type SearchParams = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/_public/store/")({
     validateSearch: searchSchema,
@@ -69,7 +69,7 @@ function StorePage() {
                 </div>
 
                 {/* Products */}
-                <div className="mb-4 grid gap-8 sm:grid-cols-2 md:mb-8 xl:grid-cols-4">
+                <div className="mb-4 grid gap-8 sm:grid-cols-2 md:grid-cols-3 md:mb-8 xl:grid-cols-4">
                     {data.map((product) => (
                         <ProductCard key={product.id} {...product} />
                     ))}
