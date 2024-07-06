@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Separator } from "@/components/ui/separator";
 import { productOptions } from "@/queries/products";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { AddToCartButton, FavoriteButton } from "@/components/cart";
+import { AddToCartButton } from "@/components/cart";
 
 export const Route = createFileRoute("/_public/store/$productId")({
     component: ProductPage,
@@ -23,7 +23,7 @@ function ProductPage() {
                     <img
                         src="/coffee.jpg"
                         alt={data.name}
-                        className="h-[350px] md:h-[350px] rounded-sm"
+                        className="h-[300px] lg:h-[400px] rounded-sm"
                     />
                 </div>
 
@@ -31,6 +31,7 @@ function ProductPage() {
                     <h2 className="scroll-m-20 border-b pb-2 text-4xl font-semibold tracking-tight first:mt-0 lg:text-5xl">
                         {data.name}
                     </h2>
+
                     <div className="mt-4 sm:flex sm:items-center sm:gap-4">
                         <p className="text-2xl font-semibold sm:text-3xl">
                             ${data.price}
@@ -50,16 +51,17 @@ function ProductPage() {
                         </div>
                     </div>
 
-                    <div className="mt-6 flex gap-2 sm:mt-8 sm:items-center">
-                        <AddToCartButton product={data} />
-                        <FavoriteButton productId={+productId} />
-                    </div>
-
-                    <Separator className="my-10" />
-
                     <p className="leading-7 [&:not(:first-child)]:mt-6">
                         {data.desc}
                     </p>
+
+                    <Separator className="my-10" />
+
+                    <div className="mt-6 flex gap-2 sm:mt-8 sm:items-center">
+                        <AddToCartButton product={data} />
+                    </div>
+
+
                 </div>
             </div>
         </section>

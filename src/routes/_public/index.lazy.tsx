@@ -1,9 +1,8 @@
 import { Link, createLazyFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/api/products";
 import { ProductCardHorizontal } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Sort } from "./store";
+import { useProducts } from "@/queries/products";
 
 export const Route = createLazyFileRoute("/_public/")({
     component: Index,
@@ -39,7 +38,7 @@ function Index() {
                     </div>
                 </div>
             </header>
-            <section className="mx-auto mt-2 w-full px-4">
+            <section className="mx-auto mt-2 w-full">
                 <PopularProducts />
             </section>
         </main>
@@ -47,21 +46,17 @@ function Index() {
 }
 
 function PopularProducts() {
-    const { data } = useQuery({
-        queryKey: ["popular-products"],
-        queryFn: () => getProducts({ limit: 5, sort: Sort.newest }),
-    });
+    const { data: products } = useProducts({ limit: 4, sort: Sort.newest })
 
     return (
         <>
-            <h2 className="mb-6 scroll-m-20 text-3xl font-semibold tracking-tight opacity-90 first:mt-0">
+            <h2 className="mb-6 px-2 scroll-m-20 text-2xl font-semibold tracking-tight opacity-90 first:mt-0">
                 Ultimos Productos
             </h2>
-            <div className="mb-10 flex gap-8 overflow-x-auto">
-                {data &&
-                    data.map((product) => (
-                        <ProductCardHorizontal key={product.id} {...product} />
-                    ))}
+            <div className="mb-10 flex gap-8 overflow-x-hidden">
+                {products && products.map((product) => (
+                    <ProductCardHorizontal key={product.id} {...product} />
+                ))}
             </div>
         </>
     );
