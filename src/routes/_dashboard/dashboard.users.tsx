@@ -1,42 +1,29 @@
 import { DataTable } from "@/components/table/data-table";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteUser, getUsers } from "@/api/users";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { InsertUserForm } from "@/components/forms/user";
 import { columns } from "@/components/table/columns/user";
-import { toast } from "sonner";
+import { useDeleteUser, usersOptions } from "@/queries/users";
 
 export const Route = createFileRoute("/_dashboard/dashboard/users")({
+    loader: ({ context: { queryClient } }) =>
+        queryClient.ensureQueryData(usersOptions),
     component: UsersPage,
 });
 
 function UsersPage() {
-    const queryClient = useQueryClient();
-
-    const { data } = useQuery({
-        queryKey: ["users"],
-        queryFn: getUsers,
-    });
-
-    const { mutate } = useMutation({
-        mutationKey: ["delete-users"],
-        mutationFn: deleteUser,
-        onSuccess: () => {
-            toast.success("Usuario correctamente eliminado");
-            queryClient.invalidateQueries({ queryKey: ["users"] });
-        },
-        onError: () => toast.error("Error al eliminar el usuario")
-    });
+    const { data: users } = useSuspenseQuery(usersOptions)
+    const { mutate: deleteUserById } = useDeleteUser()
 
     return (
         <div className="container mx-auto py-4">
             <DataTable
                 name="Usuario"
                 columns={columns}
-                data={data ?? []}
+                data={users ?? []}
                 filterBy="username"
                 insertForm={<InsertUserForm />}
-                onDelete={mutate}
+                onDelete={deleteUserById}
             />
         </div>
     );

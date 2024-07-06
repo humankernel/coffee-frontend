@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Card,
     CardContent,
+    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -126,7 +127,7 @@ function MostPopular() {
                 <CoffeeIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl text-bold">
+                <div className="text-2xl font-bold">
                     {mostPopularProduct}
                 </div>
                 <p className="text-xs text-muted-foreground">

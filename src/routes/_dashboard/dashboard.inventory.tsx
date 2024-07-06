@@ -1,12 +1,9 @@
 import { DataTable } from "@/components/table/data-table";
 import { createFileRoute } from "@tanstack/react-router";
-
-import { deleteProduct } from "@/api/products";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { InsertProductForm } from "@/components/forms/product";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { CreateProductForm } from "@/components/forms/product";
 import { columns } from "@/components/table/columns/products";
-import { toast } from "sonner";
-import { productsOptions } from "@/queries/products";
+import { productsOptions, useDeleteProduct } from "@/queries/products";
 import { Sort } from "../_public/store";
 
 export const Route = createFileRoute("/_dashboard/dashboard/inventory")({
@@ -16,30 +13,18 @@ export const Route = createFileRoute("/_dashboard/dashboard/inventory")({
 });
 
 function InventoryPage() {
-    const { data } = useSuspenseQuery(productsOptions({ sort: Sort.newest }));
-    const queryClient = useQueryClient();
-
-    const { mutate } = useMutation({
-        mutationKey: ["delete-product"],
-        mutationFn: deleteProduct,
-        onSuccess: () => {
-            toast.success("Producto correctamente eliminado");
-            queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
-        },
-        onError: () => {
-            toast.error("Error al eliminar el producto")
-        }
-    });
+    const { data: products } = useSuspenseQuery(productsOptions({ sort: Sort.newest }));
+    const { mutate: deleteProductById } = useDeleteProduct()
 
     return (
         <main className="container mx-auto py-4">
             <DataTable
                 name="Producto"
                 columns={columns}
-                data={data ?? []}
+                data={products}
                 filterBy="name"
-                insertForm={<InsertProductForm />}
-                onDelete={mutate}
+                insertForm={<CreateProductForm />}
+                onDelete={deleteProductById}
             />
         </main>
     );

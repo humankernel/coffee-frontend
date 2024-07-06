@@ -1,42 +1,29 @@
-import { deleteQs, getQs } from "@/api/qs";
-import { InsertQsForm } from "@/components/forms/qs";
-import { columns } from "@/components/table/columns/qs";
+import { InsertCsForm } from "@/components/forms/qs";
+import { columns } from "@/components/table/columns/cs";
 import { DataTable } from "@/components/table/data-table";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { csOptions, useDeleteCs } from "@/queries/complains";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/_dashboard/dashboard/qs")({
-    component: QsPage,
+    loader: ({ context: { queryClient } }) =>
+        queryClient.ensureQueryData(csOptions),
+    component: CsPage,
 });
 
-function QsPage() {
-    const queryClient = useQueryClient();
-
-    const { data } = useQuery({
-        queryKey: ["qs"],
-        queryFn: getQs,
-    });
-
-    const { mutate } = useMutation({
-        mutationKey: ["delete-qs"],
-        mutationFn: deleteQs,
-        onSuccess: () => {
-            toast.success("Queja o Sugerencia correctamente eliminado");
-            queryClient.invalidateQueries({ queryKey: ["qs"] });
-        },
-        onError: () => toast.error("Error al eliminar una queja o sugerencia"),
-    });
+function CsPage() {
+    const { data: css } = useSuspenseQuery(csOptions)
+    const { mutate: deleteCsById } = useDeleteCs()
 
     return (
         <main className="container mx-auto py-4">
             <DataTable
                 name="Quejas/Sugerencias"
                 columns={columns}
-                data={data ?? []}
+                data={css ?? []}
                 filterBy="desc"
-                insertForm={<InsertQsForm />}
-                onDelete={mutate}
+                insertForm={<InsertCsForm />}
+                onDelete={deleteCsById}
             />
         </main>
     );
