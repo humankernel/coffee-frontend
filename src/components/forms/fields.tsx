@@ -1,6 +1,5 @@
 import { FormApi, type FieldApi } from "@tanstack/react-form";
-import { FieldInfo } from "@/lib/utils";
-import { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, useState } from "react";
+import { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 // shadcn
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -45,7 +44,10 @@ export function SubmitForm({ form }: { form: FormApi<any, any> }) {
     return <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting,]}
         children={([canSubmit, isSubmitting]) => (
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+                <Button type="reset" variant="outline" onClick={form.reset}>
+                    Limpiar
+                </Button>
                 <Button type="submit" size="sm" disabled={!canSubmit} >
                     {isSubmitting
                         ? <LoaderIcon className="h-4 w-4 animate-spin" />
@@ -54,6 +56,17 @@ export function SubmitForm({ form }: { form: FormApi<any, any> }) {
             </div>
         )}
     />
+}
+
+export function FieldInfo({ field }: { field: FieldApi<any, any, any, any> }) {
+    return (
+        <>
+            {field.state.meta.touchedErrors ? (
+                <span className="text-sm font-semibold text-white/60">{field.state.meta.touchedErrors}</span>
+            ) : null}
+            {field.state.meta.isValidating ? 'Validating...' : null}
+        </>
+    )
 }
 
 export function InputField({ name, field, ...props }: InputParams) {

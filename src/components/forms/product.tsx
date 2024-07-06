@@ -1,6 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
-import { Drink, Food, ProductType, Size, Temp, getProduct, insertDrink, insertFood, updateDrink, updateFood, updateProduct } from "@/api/products";
+import { Drink, Food, ProductType, Size, Temp } from "@/api/products";
 import {
     descValidations,
     drinkValidators,
@@ -11,67 +10,42 @@ import {
     sizeValidators,
     tempValidators,
 } from "@/components/forms/validators";
-import {
-    TextAreaField,
-    MultiSelectField,
-    InputField,
-    SelectField,
-    SubmitForm,
-} from "@/components/forms/fields";
+import { InputField, MultiSelectField, SelectField, SubmitForm, TextAreaField, } from "@/components/forms/fields";
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { INGREDIENTS, SIZES, TEMPS } from "@/constants";
-import { Sort } from "@/routes/_public/store";
+import { removeEmptyValues } from "@/lib/utils";
+import { useCreateProduct, useProduct, useUpdateProduct } from "@/queries/products";
 // shadcn
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
-import { removeEmptyValues } from "@/lib/utils";
+import { zodValidator } from "@tanstack/zod-form-adapter";
 
-export function InsertProductForm() {
-    const [type, setType] = useState<string>(ProductType.food);
-    const queryClient = useQueryClient();
-
-    const { mutateAsync } = useMutation({
-        mutationKey: ["insert-product"],
-        mutationFn: async (values: unknown) => {
-            const productToSend = removeEmptyValues(values);
-
-            if (type === ProductType.food)
-                await insertFood(productToSend as Food)
-
-            else if (type === ProductType.drink)
-                await insertDrink(productToSend as Drink)
-        },
-        onSuccess: () => {
-            toast.success("Producto insertado correctamente");
-            queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
-        },
-        onError: () => toast.error("Error al insertar el Producto"),
-    });
+export function CreateProductForm() {
+    const [type, setType] = useState<ProductType>(ProductType.food);
+    const { mutateAsync: createProduct } = useCreateProduct()
 
     const form = useForm({
         defaultValues: {
-            name: "", desc: "", price: 0, discount: 0, stars: 0, people: 0,
-            type: ProductType.food,
-            foodType: "", ingredients: [],
+            name: "", desc: "", price: 0, stars: 0, people: 0, discount: 0,
             size: Size.sm, temp: Temp.hot, drinkType: "",
+            foodType: "", ingredients: []
         },
-        onSubmit: ({ value }) => {
-            console.log(value)
-            mutateAsync(value)
+        onSubmit: async ({ value }) => {
+            const product = removeEmptyValues(value)
+            product.type = type
+            createProduct(product)
         },
         validatorAdapter: zodValidator,
     });
 
     return (
-        <ScrollArea className="max-h-[80vh] p-2">
+        <ScrollArea className="max-h-[80vh]">
             <form onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 form.handleSubmit();
             }} >
-                <div className="grid w-full items-center gap-4 p-1">
+                <div className="grid gap-4 p-1">
                     {/* NAME */}
                     <form.Field
                         name="name"
@@ -79,10 +53,9 @@ export function InsertProductForm() {
                         children={(field) => (
                             <div className="grid gap-2">
                                 <InputField
-                                    name="Nombre"
-                                    type="text"
                                     field={field}
-                                    placeholder="Cafe Mocca"
+                                    name="Nombre"
+                                    placeholder="Cafe "
                                     required
                                 />
                             </div>
@@ -96,8 +69,8 @@ export function InsertProductForm() {
                         children={(field) => (
                             <div className="grid gap-2">
                                 <TextAreaField
-                                    name="Descripcion"
                                     field={field}
+                                    name="Descripcion"
                                     placeholder="..."
                                     required
                                 />
@@ -110,13 +83,15 @@ export function InsertProductForm() {
                         name="price"
                         validators={priceValidators}
                         children={(field) => (
-                            <InputField
-                                name="Precio"
-                                type="number"
-                                field={field}
-                                placeholder="17.50"
-                                required
-                            />
+                            <div className="grid gap-2">
+                                <InputField
+                                    field={field}
+                                    type="number"
+                                    name="Precio"
+                                    placeholder="4.49"
+                                    required
+                                />
+                            </div>
                         )}
                     />
 
@@ -127,49 +102,56 @@ export function InsertProductForm() {
                             <TabsTrigger value={ProductType.food}>Comida</TabsTrigger>
                             <TabsTrigger value={ProductType.drink}>Bebida</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="food">
+                        <TabsContent value={ProductType.food}>
                             <div className="mt-8 grid w-full items-center gap-4">
-                                {/* FOOD TYPE */}
-                                <form.Field
-                                    name="foodType"
-                                    validators={foodTypeValidators}
-                                    children={(field) => (
-                                        <InputField
-                                            name="Tipo de Comida"
-                                            field={field}
-                                            placeholder=""
-                                            required
-                                        />
-                                    )}
-                                />
                                 {/* FOOD INGREDIENTS */}
                                 <form.Field
                                     name="ingredients"
                                     validators={ingredientsValidators}
                                     children={(field) => (
-                                        <MultiSelectField
-                                            name="Ingredientes"
-                                            field={field}
-                                            items={INGREDIENTS}
-                                            placeholder="Azucar, Helado, ..."
-                                        />
+                                        <div className="grid gap-2">
+                                            <MultiSelectField
+                                                field={field}
+                                                items={INGREDIENTS}
+                                                name="Ingredientes"
+                                                placeholder="Azucar, Helado, ..."
+                                            />
+                                        </div>
+                                    )}
+                                />
+
+                                {/* FOOD TYPE */}
+                                <form.Field
+                                    name="foodType"
+                                    validators={foodTypeValidators}
+                                    children={(field) => (
+                                        <div className="grid gap-2">
+                                            <InputField
+                                                field={field}
+                                                name="Tipo de Comida"
+                                                placeholder="Postre, Guarnición ,..."
+                                                required
+                                            />
+                                        </div>
                                     )}
                                 />
                             </div>
                         </TabsContent>
-                        <TabsContent value="drink">
+                        <TabsContent value={ProductType.drink}>
                             <div className="mt-8 grid w-full items-center gap-4">
                                 {/* DRINK SIZE */}
                                 <form.Field
                                     name="size"
                                     validators={sizeValidators}
                                     children={(field) => (
-                                        <SelectField
-                                            name="Tamaño"
-                                            items={SIZES}
-                                            field={field}
-                                            required
-                                        />
+                                        <div className="grid gap-2">
+                                            <SelectField
+                                                field={field}
+                                                name="Tamaño"
+                                                items={SIZES}
+                                                required
+                                            />
+                                        </div>
                                     )}
                                 />
 
@@ -178,12 +160,14 @@ export function InsertProductForm() {
                                     name="temp"
                                     validators={tempValidators}
                                     children={(field) => (
-                                        <SelectField
-                                            name="Temperatura"
-                                            items={TEMPS}
-                                            field={field}
-                                            required
-                                        />
+                                        <div className="grid gap-2">
+                                            <SelectField
+                                                field={field}
+                                                name="Temperatura"
+                                                items={TEMPS}
+                                                required
+                                            />
+                                        </div>
                                     )}
                                 />
 
@@ -192,12 +176,14 @@ export function InsertProductForm() {
                                     name="drinkType"
                                     validators={drinkValidators}
                                     children={(field) => (
-                                        <InputField
-                                            name="Tipo de Bebida"
-                                            field={field}
-                                            placeholder="cafe"
-                                            required
-                                        />
+                                        <div className="grid gap-2">
+                                            <InputField
+                                                field={field}
+                                                name="Tipo de Bebida"
+                                                placeholder="Café, Té, Refresco, ..."
+                                                required
+                                            />
+                                        </div>
                                     )}
                                 />
                             </div>
@@ -211,59 +197,42 @@ export function InsertProductForm() {
 }
 
 export function UpdateProductForm({ id }: { id: number }) {
-    const queryClient = useQueryClient();
-
-    const { data } = useQuery({
-        queryKey: [id, "products"],
-        queryFn: async () => getProduct(id),
-    });
-
-    const { mutateAsync } = useMutation({
-        mutationKey: [id, "update-product"],
-        mutationFn: async (values: unknown) => {
-            const productToSend = removeEmptyValues(values);
-            if (data?.type === ProductType.food)
-                await updateFood(id, productToSend as Food)
-            else if (data?.type === ProductType.drink)
-                await updateDrink(id, productToSend as Drink)
-        },
-        onSuccess: () => {
-            toast.success("Producto actualizado correctamente");
-            queryClient.invalidateQueries({ queryKey: [{ sort: Sort.newest }, "products"] });
-        },
-        onError: () => toast.error("Error al actualizar el producto"),
-    });
+    const { data } = useProduct(id)
+    const { mutateAsync: updateProductById } = useUpdateProduct()
 
     const form = useForm({
         defaultValues: {
-            name: "", desc: "", price: 0, discount: 0, stars: 0, people: 0,
-            type: ProductType.food,
-            foodType: "", ingredients: [],
+            name: "", desc: "", price: 0, stars: 0, people: 0, discount: 0,
             size: Size.sm, temp: Temp.hot, drinkType: "",
+            foodType: "", ingredients: []
         },
-        onSubmit: async ({ value }) => mutateAsync(value),
+        onSubmit: ({ value }) => {
+            const productToUpdate = removeEmptyValues(value)
+            updateProductById({ id, product: productToUpdate })
+        },
         validatorAdapter: zodValidator,
     });
 
     return (
-        <ScrollArea className="max-h-[80vh] p-2">
+        <ScrollArea className="max-h-[80vh]">
             <form onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 form.handleSubmit();
             }} >
-                <div className="grid w-full items-center gap-4 p-1">
+                <div className="grid gap-4 p-1">
                     {/* NAME */}
                     <form.Field
                         name="name"
                         validators={nameValidations}
                         children={(field) => (
-                            <InputField
-                                name="Nombre"
-                                type="text"
-                                field={field}
-                                placeholder={data?.name ?? "Cafe Mocca"}
-                            />
+                            <div className="grid gap-2">
+                                <InputField
+                                    field={field}
+                                    name="Nombre"
+                                    placeholder={data?.name}
+                                />
+                            </div>
                         )}
                     />
 
@@ -272,11 +241,13 @@ export function UpdateProductForm({ id }: { id: number }) {
                         name="desc"
                         validators={descValidations}
                         children={(field) => (
-                            <TextAreaField
-                                name="Descripcion"
-                                field={field}
-                                placeholder={data?.desc ?? ".."}
-                            />
+                            <div className="grid gap-2">
+                                <TextAreaField
+                                    field={field}
+                                    name="Descripcion"
+                                    placeholder={data?.desc}
+                                />
+                            </div>
                         )}
                     />
 
@@ -285,61 +256,71 @@ export function UpdateProductForm({ id }: { id: number }) {
                         name="price"
                         validators={priceValidators}
                         children={(field) => (
-                            <InputField
-                                name="Precio"
-                                field={field}
-                                placeholder={data?.price?.toString() ?? "$17.50"}
-                            />
+                            <div className="grid gap-2">
+                                <InputField
+                                    field={field}
+                                    name="Precio"
+                                    type="number"
+                                    placeholder={data?.price.toString()}
+                                />
+                            </div>
                         )}
                     />
 
                     {/* TYPE */}
-                    <Tabs value={data?.type ?? "food"}>
+                    <Tabs value={data?.type}>
                         <TabsList>
-                            <TabsTrigger value="food">Comida</TabsTrigger>
-                            <TabsTrigger value="drink">Bebida</TabsTrigger>
+                            <TabsTrigger value={ProductType.food}>Comida</TabsTrigger>
+                            <TabsTrigger value={ProductType.drink}>Bebida</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="food">
+                        <TabsContent value={ProductType.food}>
                             <div className="mt-8 grid w-full items-center gap-4">
-                                {/* FOOD TYPE */}
-                                <form.Field
-                                    name="foodType"
-                                    validators={foodTypeValidators}
-                                    children={(field) => (
-                                        <InputField
-                                            name="Tipo de Comida"
-                                            field={field}
-                                            placeholder={data?.foodType ?? ""}
-                                        />
-                                    )}
-                                />
                                 {/* FOOD INGREDIENTS */}
                                 <form.Field
                                     name="ingredients"
                                     validators={ingredientsValidators}
                                     children={(field) => (
-                                        <MultiSelectField
-                                            name="Ingredientes"
-                                            field={field}
-                                            items={INGREDIENTS}
-                                            placeholder="Azucar, Helado, ..."
-                                        />
+                                        <div className="grid gap-2">
+                                            <MultiSelectField
+                                                field={field}
+                                                items={INGREDIENTS}
+                                                name="Ingredientes"
+                                                placeholder="Azucar, Helado, ..."
+                                            />
+                                        </div>
+                                    )}
+                                />
+
+                                {/* FOOD TYPE */}
+                                <form.Field
+                                    name="foodType"
+                                    validators={foodTypeValidators}
+                                    children={(field) => (
+                                        <div className="grid gap-2">
+                                            <InputField
+                                                field={field}
+                                                name="Tipo de Comida"
+                                                placeholder="Postre, Guarnición ,..."
+                                            />
+                                        </div>
                                     )}
                                 />
                             </div>
                         </TabsContent>
-                        <TabsContent value="drink">
+                        <TabsContent value={ProductType.drink}>
                             <div className="mt-8 grid w-full items-center gap-4">
                                 {/* DRINK SIZE */}
                                 <form.Field
                                     name="size"
                                     validators={sizeValidators}
                                     children={(field) => (
-                                        <SelectField
-                                            name="Tamaño"
-                                            items={SIZES}
-                                            field={field}
-                                        />
+                                        <div className="grid gap-2">
+                                            <SelectField
+                                                field={field}
+                                                name="Tamaño"
+                                                items={SIZES}
+                                            />
+                                        </div>
                                     )}
                                 />
 
@@ -348,11 +329,13 @@ export function UpdateProductForm({ id }: { id: number }) {
                                     name="temp"
                                     validators={tempValidators}
                                     children={(field) => (
-                                        <SelectField
-                                            name="Temperatura"
-                                            items={TEMPS}
-                                            field={field}
-                                        />
+                                        <div className="grid gap-2">
+                                            <SelectField
+                                                field={field}
+                                                name="Temperatura"
+                                                items={TEMPS}
+                                            />
+                                        </div>
                                     )}
                                 />
 
@@ -361,11 +344,13 @@ export function UpdateProductForm({ id }: { id: number }) {
                                     name="drinkType"
                                     validators={drinkValidators}
                                     children={(field) => (
-                                        <InputField
-                                            name="Tipo de Bebida"
-                                            field={field}
-                                            placeholder={data?.drinkType ?? ""}
-                                        />
+                                        <div className="grid gap-2">
+                                            <InputField
+                                                field={field}
+                                                name="Tipo de Bebida"
+                                                placeholder="Café, Té, Refresco, ..."
+                                            />
+                                        </div>
                                     )}
                                 />
                             </div>
@@ -374,6 +359,6 @@ export function UpdateProductForm({ id }: { id: number }) {
                 </div>
                 <SubmitForm form={form} />
             </form>
-        </ScrollArea>
+        </ScrollArea >
     );
 }

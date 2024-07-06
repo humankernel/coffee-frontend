@@ -10,10 +10,13 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { InsertCsForm } from "./forms/qs";
 
 type Props = {
     links: LinkItem[]
@@ -65,20 +68,41 @@ function UserDropdown() {
         <DropdownMenu>
             <DropdownMenuTrigger>
                 <Avatar className="h-8 w-8 border p-1 hover:border-primary">
-                    <AvatarImage src="/react.svg" alt="user" />
+                    <AvatarImage src="/avatar.svg" alt="user" />
                     <AvatarFallback>{user?.username}</AvatarFallback>
                 </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="grid gap-1">
                 <DropdownMenuItem asChild>
                     <Button
+                        asChild
                         size="sm"
                         variant="ghost"
-                        className="mb-2 flex w-full justify-start rounded-[0.5rem]"
+                        className="flex w-full justify-start rounded-[0.5rem] rounded-t-sm cursor-pointer"
                     >
-                        <Link to="/profile"> Perfil </Link>
+                        <Link to="/profile" > Perfil </Link>
                     </Button>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                className="flex justify-start rounded-[0.5rem] px-2"
+                            >
+                                Queja/Sugerencia
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Queja/Sugerencia</DialogTitle>
+                            </DialogHeader>
+                            <InsertCsForm />
+                        </DialogContent>
+                    </Dialog>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 {isAuthenticated ? (
                     <DropdownMenuItem asChild>
                         <Button
@@ -93,17 +117,19 @@ function UserDropdown() {
                     <>
                         <DropdownMenuItem asChild>
                             <Button
+                                asChild
                                 size="sm"
                                 variant="ghost"
-                                className="mb-2 flex w-full justify-start rounded-[0.5rem]"
+                                className="flex w-full justify-start rounded-[0.5rem]"
                             >
                                 <Link to="/login"> Iniciar Sesion </Link>
                             </Button>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                             <Button
+                                asChild
                                 size="sm"
-                                className="flex w-full justify-start rounded-[0.5rem] rounded-b-2xl"
+                                className="flex w-full justify-start rounded-[0.5rem] rounded-b-2xl cursor-pointer"
                             >
                                 <Link to="/register"> Crear Cuenta </Link>
                             </Button>

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { AddToCartButton, FavoriteButton } from "@/components/cart";
+import { AddToCartButton } from "@/components/cart";
 // shadcn
 import {
     Card,
@@ -75,7 +75,6 @@ export function ProductCard(product: Product) {
                 </p>
 
                 <div>
-                    <FavoriteButton productId={id} />
                     <AddToCartButton product={product} />
                 </div>
             </CardFooter>
@@ -90,7 +89,7 @@ export function ProductCardHorizontal({
     stars = 0,
 }: ProductProps) {
     return (
-        <Card className="flex h-[120px] w-[260px]">
+        <Card className="flex">
             <CardContent>
                 <Link
                     to="/store/$productId"

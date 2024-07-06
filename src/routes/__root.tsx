@@ -17,7 +17,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootLayout() {
     return (
-        <div className="mx-auto max-w-screen-xl">
+        <div className="mx-auto">
             <Outlet />
             <Toaster />
 

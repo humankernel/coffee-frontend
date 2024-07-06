@@ -1,43 +1,31 @@
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import {
-    descValidations, qsTypeValidators,
+    descValidations, qsTypeValidators, statusValidators,
 } from "@/components/forms/validators";
 import { SelectField, SubmitForm, TextAreaField, } from "@/components/forms/fields";
-import { QS, getQsById, insertQs, updateQs } from "@/api/qs";
+import { QSS, STATUS } from "@/constants";
+import { useCreateCs, useCs, useUpdateCs } from "@/queries/cs";
 // shadcn
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { QSS } from "@/constants";
 
-export function InsertQsForm() {
-    const queryClient = useQueryClient();
-
-    const { mutateAsync } = useMutation({
-        mutationKey: ["insert-qs"],
-        mutationFn: (values: QS) => insertQs(values),
-        onSuccess: () => {
-            toast.success("Queja o sugerencia insertado correctamente");
-            queryClient.invalidateQueries({ queryKey: ["qs"] });
-        },
-        onError: () => toast.error("Error al insertar la queja o sugerencia"),
-    });
+export function InsertCsForm() {
+    const { mutateAsync: createCs } = useCreateCs()
 
     const form = useForm({
         defaultValues: { desc: "", type: "" },
-        onSubmit: async ({ value }) => mutateAsync(value),
+        onSubmit: async ({ value }) => createCs(value),
         validatorAdapter: zodValidator,
     });
 
     return (
-        <ScrollArea className="max-h-[80vh] p-1">
+        <ScrollArea className="max-h-[80vh]">
             <form onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 form.handleSubmit();
             }} >
-                <div className="grid w-full items-center gap-4 p-1">
+                <div className="grid gap-4 p-1">
                     {/* DESC */}
                     <form.Field
                         name="desc"
@@ -52,7 +40,7 @@ export function InsertQsForm() {
                         )}
                     />
 
-                    {/* Type */}
+                    {/* TYPE */}
                     <form.Field
                         name="type"
                         validators={qsTypeValidators}
@@ -73,58 +61,31 @@ export function InsertQsForm() {
 }
 
 export function UpdateQsForm({ id }: { id: number }) {
-    const queryClient = useQueryClient();
-
-    const { data } = useQuery({
-        queryKey: [id, "qs"],
-        queryFn: async () => getQsById(id),
-    });
-
-    const { mutateAsync } = useMutation({
-        mutationKey: [id, "update-qs"],
-        mutationFn: (value: Partial<QS>) => updateQs(id, value),
-        onSuccess: () => {
-            toast.success("Queja o Sugerencia correctamente actualizada");
-            queryClient.invalidateQueries({ queryKey: ["qs"] });
-        },
-        onError: () => toast.error("Error al actualizar la queja o sugerencia"),
-    });
+    const { data: cs } = useCs(id)
+    const { mutateAsync: updateCsById } = useUpdateCs()
 
     const form = useForm({
-        defaultValues: { desc: "", type: "" },
-        onSubmit: async ({ value }) => mutateAsync(value),
+        defaultValues: { status: cs?.status },
+        onSubmit: async ({ value }) => updateCsById({ id, cs: value }),
         validatorAdapter: zodValidator,
     });
 
     return (
-        <ScrollArea className="max-h-[60vh] p-1">
+        <ScrollArea className="max-h-[60vh]">
             <form onSubmit={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 form.handleSubmit();
             }} >
-                <div className="grid w-full items-center gap-2 p-1">
-                    {/* DESC */}
+                <div className="grid gap-2 p-1">
+                    {/* STATUS */}
                     <form.Field
-                        name="desc"
-                        validators={descValidations}
-                        children={(field) => (
-                            <TextAreaField
-                                name="Descripcion"
-                                field={field}
-                                placeholder={data?.desc ?? ""}
-                            />
-                        )}
-                    />
-
-                    {/* TYPE */}
-                    <form.Field
-                        name="type"
-                        validators={qsTypeValidators}
+                        name="status"
+                        validators={statusValidators}
                         children={(field) =>
                             <SelectField
-                                name="Queja o Sugerencia"
-                                items={QSS}
+                                name="Estado"
+                                items={STATUS}
                                 field={field}
                             />
                         }
