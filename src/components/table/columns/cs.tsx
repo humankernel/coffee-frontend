@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { QS } from "@/api/qs";
+import { CS, CsType, Status } from "@/api/qs";
 import { UpdateQsForm } from "@/components/forms/qs";
 // shadcn
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 
-export const columns: ColumnDef<QS>[] = [
+export const columns: ColumnDef<CS>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -76,9 +76,34 @@ export const columns: ColumnDef<QS>[] = [
     {
         accessorKey: "type",
         header: "Tipo",
-        cell: ({ row }) => (
-            <Badge> {row.original.type} </Badge>
-        )
+        cell: ({ row }) => {
+            const { type } = row.original
+            let className: string = "";
+
+            if (type === CsType.complaint)
+                className = "bg-red-400"
+            else if (type === CsType.suggestion)
+                className = "bg-yellow-400"
+
+            return <Badge className={className}> {type} </Badge>
+        }
+    },
+    {
+        accessorKey: "type",
+        header: "Estado",
+        cell: ({ row }) => {
+            const { status } = row.original
+            let className: string = "";
+
+            if (status === Status.pending)
+                className = "bg-blue-400"
+            else if (status === Status.rejected)
+                className = "bg-red-400"
+            else if (status === Status.resolved)
+                className = "bg-green-400"
+
+            return <Badge className={className}> {status} </Badge>
+        }
     },
     {
         accessorKey: "acciones",
