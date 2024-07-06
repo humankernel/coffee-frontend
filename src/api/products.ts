@@ -1,5 +1,5 @@
 import { api } from "@/api";
-import { Search } from "@/routes/_public/store";
+import { SearchParams } from "@/routes/_public/store";
 
 export enum ProductType {
     food = "food",
@@ -41,13 +41,18 @@ export type Drink = Product & {
 };
 
 export async function getProducts(
-    params: Search,
-): Promise<(Product | Food | Drink)[]> {
+    params: SearchParams,
+): Promise<(Food | Drink)[]> {
     const { data } = await api.get("/products", { params });
     return data;
 }
 
-export async function deleteProduct(id: number): Promise<Food | Drink> {
+export async function getProductById(id: number): Promise<Food | Drink> {
+    const { data } = await api.get<Food | Drink>(`/products/${id}`);
+    return data;
+}
+
+export async function deleteProductById(id: number): Promise<Food | Drink> {
     const { data: product } = await api.get<Product>(`/products/${id}`);
 
     if (product.type === ProductType.food) {
@@ -60,35 +65,30 @@ export async function deleteProduct(id: number): Promise<Food | Drink> {
     }
 }
 
-export async function getProduct(id: number): Promise<Product | Food | Drink> {
-    const { data } = await api.get<Product>(`/products/${id}`);
-    return data;
+export async function insertProduct(
+    product: Omit<Food | Drink, "id">,
+): Promise<Food | Drink> {
+    if (product.type === ProductType.food) {
+        const { data } = await api.post<Food>("/products/food", product);
+        return data;
+    }
+
+    if (product.type === ProductType.drink) {
+        const { data } = await api.post<Drink>("/products/drink", product);
+        return data;
+    }
 }
 
-export async function insertFood(food: Omit<Food, "id">): Promise<Food> {
-    food.type = "food";
-    const { data } = await api.post<Food>("/products/food", food);
-    return data;
-}
-
-export async function insertDrink(drink: Omit<Drink, "id">): Promise<Drink> {
-    drink.type = "drink";
-    const { data } = await api.post<Drink>("/products/drink", drink);
-    return data;
-}
-
-export async function updateFood(
+export async function updateProductById(
     id: number,
-    food: Omit<Food, "id">,
-): Promise<Food> {
-    const { data } = await api.patch<Food>(`/products/food/${id}`, food);
-    return data;
-}
-
-export async function updateDrink(
-    id: number,
-    drink: Omit<Drink, "id">,
-): Promise<Drink> {
-    const { data } = await api.patch<Drink>(`/products/drink/${id}`, drink);
-    return data;
+    product: Omit<Food | Drink, "id">,
+): Promise<Food | Drink> {
+    if (product.type === ProductType.food) {
+        const { data } = await api.patch<Food>(`/products/food/${id}`, food);
+        return data;
+    }
+    if (product.type === ProductType.drink) {
+        const { data } = await api.patch<Drink>(`/products/drink/${id}`, drink);
+        return data;
+    }
 }

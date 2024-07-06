@@ -1,41 +1,48 @@
 import { api } from "@/api";
 import { removeEmptyValues } from "@/lib/utils";
 
-export enum QsType {
+export enum CsType {
     complaint = "complaint",
     suggestion = "suggestion",
 }
 
-export type QS = {
+export enum Status {
+    resolved = "resolved",
+    pending = "pending",
+    rejected = "rejected",
+}
+
+export type CS = {
     id: number;
     desc: string;
     createdAt: Date;
-    type: QsType;
+    status: Status;
+    type: CsType;
 };
 
-export async function getQs(): Promise<QS[]> {
+export async function getCs(): Promise<CS[]> {
     const { data } = await api.get("/qs");
     return data;
 }
 
-export async function insertQs(qs: Omit<QS, "id">): Promise<QS> {
+export async function createCs(qs: Omit<CS, "id">): Promise<CS> {
     const { data } = await api.post("/qs", qs);
     return data;
 }
 
-export async function getQsById(id: number): Promise<QS> {
-    const { data } = await api.get<QS>(`/qs/${id}`);
+export async function getCsById(id: number): Promise<CS> {
+    const { data } = await api.get<CS>(`/qs/${id}`);
     return data;
 }
 
-export async function updateQs(id: number, qs: Partial<QS>): Promise<QS> {
+export async function updateCs(id: number, qs: Partial<CS>): Promise<CS> {
     const qaToSend = removeEmptyValues(qs);
     console.log({ id, qaToSend });
-    const { data } = await api.patch<QS>(`/qs/${id}`, qaToSend);
+    const { data } = await api.patch<CS>(`/qs/${id}`, qaToSend);
     return data;
 }
 
-export async function deleteQs(id: number): Promise<QS> {
-    const { data } = await api.delete<QS>(`/qs/${id}`);
+export async function deleteCs(id: number): Promise<CS> {
+    const { data } = await api.delete<CS>(`/qs/${id}`);
     return data;
 }

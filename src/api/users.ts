@@ -42,7 +42,7 @@ export async function updateUser(
     return data;
 }
 
-export async function deleteUser(id: number): Promise<User> {
+export async function deleteUserById(id: number): Promise<User> {
     const { data } = await api.delete<User>(`/users/${id}`);
     return data;
 }

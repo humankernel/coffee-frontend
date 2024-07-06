@@ -1,14 +1,14 @@
 import { api } from "@/api";
 import { User } from "@/api/users";
-import { Search } from "@/routes/_public/store";
+import { SearchParams } from "@/routes/_public/store";
 
-type Sale = {
+export type Sale = {
     id: number;
     user: User;
     createdAt: Date;
 };
 
-type SaleRes = {
+export type SaleRes = {
     amount: number;
     sale: {
         id: number;
@@ -28,23 +28,24 @@ type SaleRes = {
 
 type Tiket = string;
 
-export async function makeSale(
-    userId: number,
-    cart: { id: number; count: number }[],
-): Promise<Tiket> {
-    console.log({ userId, cart });
-
+export async function createSale({
+    userId,
+    product,
+}: {
+    userId: number;
+    product: { id: number; amount: number }[];
+}): Promise<Tiket> {
     const token = "CHANGE_THIS";
 
     const { data } = await api.post<Tiket>(
         `/sales`,
-        { userId, cart }, // FIX: userId not needed if user logged in backend
+        { userId, cart: product }, // FIX: userId not needed if user logged in backend
         { headers: { Authorization: `Bearer ${token}` } },
     );
     return data;
 }
 
-export async function getSales(params?: Search): Promise<SaleRes[]> {
+export async function getSales(params?: SearchParams): Promise<SaleRes[]> {
     const { data } = await api.get<SaleRes[]>("/sales", { params });
     return data;
 }
