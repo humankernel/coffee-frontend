@@ -1,8 +1,8 @@
 import { LinkProps } from "@tanstack/react-router";
 import { Role } from "./api/users";
-import { type LucideIcon, UsersRoundIcon, MailOpenIcon, ShoppingBasketIcon, GaugeIcon, AmpersandIcon, CircleGaugeIcon, ListOrderedIcon, PackageIcon } from "lucide-react";
+import { type LucideIcon, UsersRoundIcon, MailOpenIcon, ShoppingBasketIcon, GaugeIcon, AmpersandIcon, CircleGaugeIcon, ListOrderedIcon, PackageIcon, DollarSignIcon } from "lucide-react";
 import { Size, Temp } from "@/api/products";
-import { QsType } from "@/api/qs";
+import { CsType, Status } from "@/api/qs";
 
 export type LinkItem = {
     label: string;
@@ -20,9 +20,9 @@ export const HOME_LINKS: LinkItem[] = [
 ];
 export const DASHBOARD_LINKS: LinkItem[] = [
     { label: "Dashboard", url: "/dashboard", icon: CircleGaugeIcon },
+    { label: "Ventas", url: "/dashboard/sales", icon: DollarSignIcon },
     { label: "Inventario", url: "/dashboard/inventory", icon: PackageIcon },
     { label: "Usuarios", url: "/dashboard/users", icon: UsersRoundIcon },
-    // { label: "Pedidos", url: "/dashboard/orders", icon: ListOrderedIcon },
     { label: "Q&S", url: "/dashboard/qs", icon: MailOpenIcon },
 ];
 
@@ -34,8 +34,14 @@ export const ROLES = [
 ]
 
 export const QSS = [
-    { value: QsType.complaint, label: "Queja", icon: "" },
-    { value: QsType.suggestion, label: "Sugerencia", icon: "" },
+    { value: CsType.complaint, label: "Queja", icon: "" },
+    { value: CsType.suggestion, label: "Sugerencia", icon: "" },
+]
+
+export const STATUS = [
+    { value: Status.pending, label: "Pendiente", icon: "" },
+    { value: Status.rejected, label: "Rechazado", icon: "" },
+    { value: Status.resolved, label: "Resuelto", icon: "" },
 ]
 
 export const SIZES = [
