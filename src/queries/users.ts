@@ -1,4 +1,4 @@
-import { deleteUserById, getUser, getUsers } from "@/api/users";
+import { deleteUserById, getUserById, getUsers } from "@/api/users";
 import {
     queryOptions,
     useMutation,
@@ -15,7 +15,7 @@ export const usersOptions = queryOptions({
 export const userOptions = (id: number) =>
     queryOptions({
         queryKey: ["users", id],
-        queryFn: () => getUser(id),
+        queryFn: () => getUserById(id),
         enabled: !!id,
     });
 

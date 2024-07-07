@@ -18,7 +18,7 @@ export type User = {
     isActive: boolean;
 };
 
-export async function getUser(id: number): Promise<User> {
+export async function getUserById(id: number): Promise<User> {
     const { data } = await api.get<User>(`/users/${id}`);
     return data;
 }
