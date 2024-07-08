@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { InputField, SelectField, SubmitForm } from "@/components/forms/fields";
 import {
     nameValidations,
@@ -10,8 +10,7 @@ import {
     roleValidators,
 } from "@/components/forms/validators";
 // shadcn
-import { User, getUserById, updateUserById } from "@/api/users";
-import { toast } from "sonner";
+import { getUserById } from "@/api/users";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ROLES } from "@/constants";
 import { useCreateUser, useUpdateUser } from "@/queries/users";

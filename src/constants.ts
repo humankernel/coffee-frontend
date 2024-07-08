@@ -1,5 +1,5 @@
 import { LinkProps } from "@tanstack/react-router";
-import { Role } from "./api/users";
+import { Role } from "@/api/users";
 import {
     type LucideIcon,
     UsersRoundIcon,
@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import { Size, Temp } from "@/api/products";
 import { CsType, Status } from "@/api/qs";
-import { ReportType } from "./api/report";
-import { OrderStatus } from "./api/orders";
+import { ReportType } from "@/api/report";
+import { OrderStatus } from "@/api/orders";
 
 export type LinkItem = {
     label: string;

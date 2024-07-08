@@ -49,6 +49,7 @@ export function InsertCsForm() {
                                 name="Queja o Sugerencia"
                                 items={QSS}
                                 field={field}
+                                placeholder="queja/sugerencia"
                                 required
                             />
                         }

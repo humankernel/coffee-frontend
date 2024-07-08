@@ -1,0 +1,37 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { InsertCsForm } from "../cs";
+
+
+
+vi.mock("@/constants", () => ({
+    SIZES: [
+        { value: "lg", label: "Grande", icon: "" },
+        { value: "md", label: "Medio", icon: "" },
+        { value: "sm", label: "Pequeño", icon: "" },
+    ],
+    API_BASE: ""
+}))
+
+
+
+describe("InsertCsForm", () => {
+    afterEach(() => {
+        vi.restoreAllMocks()
+    })
+
+    it("renders form fields", () => {
+        const mockCreateCs = vi.fn().mockImplementation((v) => v)
+        vi.mock("createCs", () => {
+            createCs: mockCreateCs
+        })
+
+        render(<InsertCsForm />)
+
+        const descInput = screen.getByPlaceholderText("...")
+        const typeInput = screen.getByPlaceholderText('queja/sugerencia')
+
+        expect(descInput).toBeDefined()
+        expect(typeInput).toBeDefined()
+    })
+})
