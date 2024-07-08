@@ -11,18 +11,17 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    HeartIcon,
     PlusIcon,
     ShoppingCartIcon,
     TrashIcon,
     WalletIcon,
     XIcon,
 } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/context/auth";
-import { createSale } from "@/api/sales";
-import { redirect } from "@tanstack/react-router";
 import { useCallback } from "react";
+import { useCreateSale } from "@/queries/sales";
+import { toast } from "sonner";
+import { redirect } from "@tanstack/react-router";
 
 export function AddToCartButton({ product }: { product: Product }) {
     const handleAddToCart = useCartStore((s) => s.add);
@@ -96,25 +95,20 @@ export function CartDropdown() {
     const removeAll = useCartStore((s) => s.removeAll);
     const { user } = useAuth();
 
-    const { mutate } = useMutation({
-        mutationKey: ["sales"],
-        mutationFn: () => {
-            const products = cart.map(item => ({ id: item.id, count: item.count }))
-            return createSale(user!.sub, products)
-        }
-    });
+    const { mutate: createSale } = useCreateSale()
 
     const handleMakeSale = useCallback(() => {
-        if (!user)
+        if (!user) {
+            toast.error("Tienes que estar autenticado")
             throw redirect({
                 to: "/login",
                 search: { redirect: fallback },
             });
+        }
 
-        console.log("make sale", { user });
-
-        mutate();
-    }, [mutate, user]);
+        const products = cart.map(p => ({ id: p.id, amount: p.count }))
+        return createSale({ userId: user.sub, products })
+    }, [createSale, user, cart]);
 
     return (
         <DropdownMenu>

@@ -1,20 +1,20 @@
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import {
-    descValidations,
-} from "@/components/forms/validators";
 import { InputField, SubmitForm, } from "@/components/forms/fields";
 // shadcn
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { createSale } from "@/api/sales";
+import { z } from "zod";
+import { useCreateSale } from "@/queries/sales";
 
 export function InsertSaleForm() {
+    const { mutateAsync: createSale } = useCreateSale()
+
     const form = useForm({
         defaultValues: { userId: 0, productId: 0, amount: 0 },
         onSubmit: async ({ value }) => {
             const { userId, productId, amount } = value
-            const product = [{ id: productId, amount }]
-            createSale({ userId, product })
+            const products = [{ id: productId, amount }]
+            await createSale({ userId, products })
         },
         validatorAdapter: zodValidator,
     });
@@ -30,7 +30,10 @@ export function InsertSaleForm() {
                     {/* USERID */}
                     <form.Field
                         name="userId"
-                        validators={descValidations}
+                        validators={{
+                            onChange: z.coerce.number(),
+                            onChangeAsyncDebounceMs: 500
+                        }}
                         children={(field) => (
                             <InputField
                                 name="Id del Usuario"
@@ -45,7 +48,10 @@ export function InsertSaleForm() {
                     {/* PRODUCTID */}
                     <form.Field
                         name="productId"
-                        validators={descValidations}
+                        validators={{
+                            onChange: z.coerce.number(),
+                            onChangeAsyncDebounceMs: 500
+                        }}
                         children={(field) => (
                             <InputField
                                 name="Id del Producto"
@@ -60,7 +66,10 @@ export function InsertSaleForm() {
                     {/* CANTIDAD */}
                     <form.Field
                         name="amount"
-                        validators={descValidations}
+                        validators={{
+                            onChange: z.coerce.number(),
+                            onChangeAsyncDebounceMs: 500
+                        }}
                         children={(field) => (
                             <InputField
                                 name="Cantidad"

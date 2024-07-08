@@ -26,20 +26,18 @@ export type SaleRes = {
     };
 };
 
-type Tiket = string;
-
 export async function createSale({
     userId,
-    product,
+    products,
 }: {
     userId: number;
-    product: { id: number; amount: number }[];
-}): Promise<Tiket> {
+    products: { id: number; amount: number }[];
+}): Promise<any> {
     const token = "CHANGE_THIS";
 
-    const { data } = await api.post<Tiket>(
+    const { data } = await api.post(
         `/sales`,
-        { userId, cart: product }, // FIX: userId not needed if user logged in backend
+        { userId, products },
         { headers: { Authorization: `Bearer ${token}` } },
     );
     return data;
