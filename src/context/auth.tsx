@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setToken(data.token);
         setUser(userRes);
-        persistUser(userRes);
+        // persistUser(userRes);
     }, []);
 
     const register = useCallback(
