@@ -80,15 +80,20 @@ export async function insertProduct(
 }
 
 export async function updateProductById(
-    id: number,
-    product: Omit<Food | Drink, "id">,
+    product: Food | Drink,
 ): Promise<Food | Drink> {
     if (product.type === ProductType.food) {
-        const { data } = await api.patch<Food>(`/products/food/${id}`, food);
+        const { data } = await api.patch<Food>(
+            `/products/food/${product.id}`,
+            product,
+        );
         return data;
     }
     if (product.type === ProductType.drink) {
-        const { data } = await api.patch<Drink>(`/products/drink/${id}`, drink);
+        const { data } = await api.patch<Drink>(
+            `/products/drink/${product.id}`,
+            product,
+        );
         return data;
     }
 }
