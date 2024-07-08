@@ -79,6 +79,7 @@ export function LoginPage() {
                                         name="Nombre de Usuario"
                                         field={field}
                                         placeholder="johndoe"
+                                        required
                                     />
                                 )}
                             />
@@ -93,19 +94,18 @@ export function LoginPage() {
                                         type="password"
                                         field={field}
                                         placeholder="****"
+                                        required
                                     />
                                 )}
                             />
 
                             <form.Subscribe
-                                selector={(state) => [
-                                    state.canSubmit,
-                                    state.isSubmitting,
-                                ]}
+                                selector={(state) => [state.canSubmit, state.isSubmitting]}
                                 children={([canSubmit, isSubmitting]) => (
                                     <Button
                                         type="submit"
                                         size="sm"
+                                        className="w-full"
                                         disabled={!canSubmit}
                                     >
                                         {isSubmitting ? "..." : "Logearse"}
