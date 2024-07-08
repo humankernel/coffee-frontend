@@ -23,9 +23,11 @@ import { Route as ProfileProfileIndexImport } from './routes/_profile/profile.in
 import { Route as DashboardDashboardIndexImport } from './routes/_dashboard/dashboard.index'
 import { Route as PublicStoreProductIdImport } from './routes/_public/store/$productId'
 import { Route as DashboardDashboardUsersImport } from './routes/_dashboard/dashboard.users'
-import { Route as DashboardDashboardQsImport } from './routes/_dashboard/dashboard.qs'
+import { Route as DashboardDashboardSalesImport } from './routes/_dashboard/dashboard.sales'
+import { Route as DashboardDashboardReportsImport } from './routes/_dashboard/dashboard.reports'
 import { Route as DashboardDashboardOrdersImport } from './routes/_dashboard/dashboard.orders'
 import { Route as DashboardDashboardInventoryImport } from './routes/_dashboard/dashboard.inventory'
+import { Route as DashboardDashboardCsImport } from './routes/_dashboard/dashboard.cs'
 
 // Create Virtual Routes
 
@@ -94,8 +96,13 @@ const DashboardDashboardUsersRoute = DashboardDashboardUsersImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 
-const DashboardDashboardQsRoute = DashboardDashboardQsImport.update({
-  path: '/dashboard/qs',
+const DashboardDashboardSalesRoute = DashboardDashboardSalesImport.update({
+  path: '/dashboard/sales',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardDashboardReportsRoute = DashboardDashboardReportsImport.update({
+  path: '/dashboard/reports',
   getParentRoute: () => DashboardRoute,
 } as any)
 
@@ -109,6 +116,11 @@ const DashboardDashboardInventoryRoute =
     path: '/dashboard/inventory',
     getParentRoute: () => DashboardRoute,
   } as any)
+
+const DashboardDashboardCsRoute = DashboardDashboardCsImport.update({
+  path: '/dashboard/cs',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -163,6 +175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicIndexLazyImport
       parentRoute: typeof PublicImport
     }
+    '/_dashboard/dashboard/cs': {
+      id: '/_dashboard/dashboard/cs'
+      path: '/dashboard/cs'
+      fullPath: '/dashboard/cs'
+      preLoaderRoute: typeof DashboardDashboardCsImport
+      parentRoute: typeof DashboardImport
+    }
     '/_dashboard/dashboard/inventory': {
       id: '/_dashboard/dashboard/inventory'
       path: '/dashboard/inventory'
@@ -177,11 +196,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDashboardOrdersImport
       parentRoute: typeof DashboardImport
     }
-    '/_dashboard/dashboard/qs': {
-      id: '/_dashboard/dashboard/qs'
-      path: '/dashboard/qs'
-      fullPath: '/dashboard/qs'
-      preLoaderRoute: typeof DashboardDashboardQsImport
+    '/_dashboard/dashboard/reports': {
+      id: '/_dashboard/dashboard/reports'
+      path: '/dashboard/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof DashboardDashboardReportsImport
+      parentRoute: typeof DashboardImport
+    }
+    '/_dashboard/dashboard/sales': {
+      id: '/_dashboard/dashboard/sales'
+      path: '/dashboard/sales'
+      fullPath: '/dashboard/sales'
+      preLoaderRoute: typeof DashboardDashboardSalesImport
       parentRoute: typeof DashboardImport
     }
     '/_dashboard/dashboard/users': {
@@ -226,9 +252,11 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   DashboardRoute: DashboardRoute.addChildren({
+    DashboardDashboardCsRoute,
     DashboardDashboardInventoryRoute,
     DashboardDashboardOrdersRoute,
-    DashboardDashboardQsRoute,
+    DashboardDashboardReportsRoute,
+    DashboardDashboardSalesRoute,
     DashboardDashboardUsersRoute,
     DashboardDashboardIndexRoute,
   }),
@@ -261,9 +289,11 @@ export const routeTree = rootRoute.addChildren({
     "/_dashboard": {
       "filePath": "_dashboard.tsx",
       "children": [
+        "/_dashboard/dashboard/cs",
         "/_dashboard/dashboard/inventory",
         "/_dashboard/dashboard/orders",
-        "/_dashboard/dashboard/qs",
+        "/_dashboard/dashboard/reports",
+        "/_dashboard/dashboard/sales",
         "/_dashboard/dashboard/users",
         "/_dashboard/dashboard/"
       ]
@@ -297,6 +327,10 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_public/index.lazy.tsx",
       "parent": "/_public"
     },
+    "/_dashboard/dashboard/cs": {
+      "filePath": "_dashboard/dashboard.cs.tsx",
+      "parent": "/_dashboard"
+    },
     "/_dashboard/dashboard/inventory": {
       "filePath": "_dashboard/dashboard.inventory.tsx",
       "parent": "/_dashboard"
@@ -305,8 +339,12 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_dashboard/dashboard.orders.tsx",
       "parent": "/_dashboard"
     },
-    "/_dashboard/dashboard/qs": {
-      "filePath": "_dashboard/dashboard.qs.tsx",
+    "/_dashboard/dashboard/reports": {
+      "filePath": "_dashboard/dashboard.reports.tsx",
+      "parent": "/_dashboard"
+    },
+    "/_dashboard/dashboard/sales": {
+      "filePath": "_dashboard/dashboard.sales.tsx",
       "parent": "/_dashboard"
     },
     "/_dashboard/dashboard/users": {
