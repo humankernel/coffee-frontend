@@ -60,7 +60,7 @@ export function InsertCsForm() {
     );
 }
 
-export function UpdateQsForm({ id }: { id: number }) {
+export function UpdateCsForm({ id }: { id: number }) {
     const { data: cs } = useCs(id)
     const { mutateAsync: updateCsById } = useUpdateCs()
 

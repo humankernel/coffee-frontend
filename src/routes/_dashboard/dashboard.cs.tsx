@@ -1,11 +1,11 @@
-import { InsertCsForm } from "@/components/forms/qs";
+import { InsertCsForm } from "@/components/forms/cs";
 import { columns } from "@/components/table/columns/cs";
 import { DataTable } from "@/components/table/data-table";
 import { csOptions, useDeleteCs } from "@/queries/complains";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_dashboard/dashboard/qs")({
+export const Route = createFileRoute("/_dashboard/dashboard/cs")({
     loader: ({ context: { queryClient } }) =>
         queryClient.ensureQueryData(csOptions),
     component: CsPage,
