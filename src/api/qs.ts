@@ -37,7 +37,6 @@ export async function getCsById(id: number): Promise<CS> {
 
 export async function updateCs(id: number, qs: Partial<CS>): Promise<CS> {
     const qaToSend = removeEmptyValues(qs);
-    console.log({ id, qaToSend });
     const { data } = await api.patch<CS>(`/qs/${id}`, qaToSend);
     return data;
 }

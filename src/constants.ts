@@ -45,7 +45,7 @@ export const DASHBOARD_LINKS: LinkItem[] = [
     { label: "Q&S", url: "/dashboard/cs", icon: MailOpenIcon },
     { label: "Reportes", url: "/dashboard/reports", icon: ShoppingBasket },
     {
-        label: "Ordenes de Compra",
+        label: "Pedidos",
         url: "/dashboard/orders",
         icon: NotebookPenIcon,
     },

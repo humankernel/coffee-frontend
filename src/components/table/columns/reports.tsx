@@ -89,11 +89,7 @@ export const columns: ColumnDef<ReportResponse>[] = [
     {
         accessorKey: "product",
         header: "Id del Producto",
-        cell: ({ row }) => {
-            console.log(row.original.product.id)
-            return <div> {row.original.product.id} </div>
-        }
-
+        cell: ({ row }) => <div> {row.original.product.id} </div>
     },
     {
         accessorKey: "acciones",
