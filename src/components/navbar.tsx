@@ -1,6 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { CoffeeIcon } from "lucide-react";
-import { ThemeToggle } from "./themes/theme-toggle";
 import { LinkItem } from "@/constants";
 import { CartDropdown } from "@/components/cart";
 import { useAuth } from "@/context/auth";
@@ -16,49 +15,52 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { InsertCsForm } from "./forms/qs";
+import { InsertCsForm } from "./forms/cs";
 
-type Props = {
-    links: LinkItem[]
-}
-
-export function Navbar({ links }: Props) {
-    const pathname = useLocation({ select: (location) => location.pathname });
-    const { isAuthenticated, user } = useAuth()
-
+export function Navbar({ links }: { links: LinkItem[] }) {
     return (
         <div className="px-4 py-2 md:px-10 md:py-4">
             <header className="mx-auto flex max-w-screen-xl items-center justify-between">
                 <Link to="/" className="group">
                     <CoffeeIcon className="h-6 w-6 transition-transform group-hover:-rotate-12" />
                 </Link>
-                <nav className="hidden sm:block">
-                    {links.map((link) => {
-                        if (!link.role || (isAuthenticated && link.role === user?.role))
-                            return <Link to={link.url} key={link.label}>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    className={cn("dark:text-white/70", {
-                                        underline: pathname === link.url,
-                                    })}
-                                >
-                                    <link.icon className="mr-2 h-4 w-4" />
-                                    <p className="hidden md:block">
-                                        {link.label}
-                                    </p>
-                                </Button>
-                            </Link>
-                    })}
-                </nav>
+                <LinkList links={links} />
                 <div className="flex items-center gap-2">
                     <CartDropdown />
-                    <ThemeToggle />
                     <UserDropdown />
                 </div>
             </header>
         </div>
     );
+}
+
+export function LinkList({ links }: { links: LinkItem[] }) {
+    const pathname = useLocation({ select: (location) => location.pathname });
+    const { isAuthenticated, user } = useAuth()
+
+    return (
+        <nav className="hidden sm:block">
+            {links.map((item) => {
+                if (!item.role || (isAuthenticated && item.role === user?.role))
+                    return <Button
+                        asChild
+                        key={item.label}
+                        variant="link"
+                        size="sm"
+                        className={cn("dark:text-white/70", {
+                            underline: pathname === item.url,
+                        })}
+                    >
+                        <Link to={item.url}>
+                            <item.icon className="mr-2 h-4 w-4" />
+                            <p className="hidden md:block">
+                                {item.label}
+                            </p>
+                        </Link>
+                    </Button>
+            })}
+        </nav>
+    )
 }
 
 function UserDropdown() {

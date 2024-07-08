@@ -56,8 +56,6 @@ function Profits() {
         const prices = sales
             .map(({ product, amount }) => product.price * amount)
 
-        console.log("pricesss", prices)
-
         if (prices.length > 0)
             return prices.reduce((prev, curr) => prev + curr)
 

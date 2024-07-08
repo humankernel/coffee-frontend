@@ -24,9 +24,9 @@ export function useCreateCs() {
             });
         },
         onError: (error) => {
-            toast.error("Error al insertar la queja/sugerencia");
             if (error instanceof AxiosError)
-                toast.error("Error al insertar la queja/sugerencia\n");
+                toast.error(error.response?.data.message);
+            else toast.error("Error al insertar la queja/sugerencia");
         },
     });
 }
@@ -46,9 +46,9 @@ export function useUpdateCs() {
             });
         },
         onError: (error) => {
-            toast.error("Error al actualizar la queja/sugerencia");
             if (error instanceof AxiosError)
-                toast.error("Error al actualizar la queja/sugerencia\n");
+                toast.error(error.response?.data.message);
+            else toast.error("Error al actualizar la queja/sugerencia");
         },
     });
 }

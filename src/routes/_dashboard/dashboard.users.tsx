@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/table/data-table";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { InsertUserForm } from "@/components/forms/user";
+import { CreateUserForm } from "@/components/forms/user";
 import { columns } from "@/components/table/columns/user";
 import { useDeleteUser, usersOptions } from "@/queries/users";
 
@@ -22,7 +22,7 @@ function UsersPage() {
                 columns={columns}
                 data={users ?? []}
                 filterBy="username"
-                insertForm={<InsertUserForm />}
+                insertForm={<CreateUserForm />}
                 onDelete={deleteUserById}
             />
         </div>

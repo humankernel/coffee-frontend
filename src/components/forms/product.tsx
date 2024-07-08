@@ -197,18 +197,19 @@ export function CreateProductForm() {
 }
 
 export function UpdateProductForm({ id }: { id: number }) {
-    const { data } = useProduct(id)
+    const { data: product } = useProduct(id)
     const { mutateAsync: updateProductById } = useUpdateProduct()
 
     const form = useForm({
         defaultValues: {
-            name: "", desc: "", price: 0, stars: 0, people: 0, discount: 0,
-            size: Size.sm, temp: Temp.hot, drinkType: "",
+            name: "", desc: "", price: "",
+            type: product?.type,
+            size: "", temp: "", drinkType: "",
             foodType: "", ingredients: []
         },
         onSubmit: ({ value }) => {
-            const productToUpdate = removeEmptyValues(value)
-            updateProductById({ id, product: productToUpdate })
+            const productToUpdate = { ...removeEmptyValues(value), id }
+            updateProductById(productToUpdate)
         },
         validatorAdapter: zodValidator,
     });
@@ -230,7 +231,7 @@ export function UpdateProductForm({ id }: { id: number }) {
                                 <InputField
                                     field={field}
                                     name="Nombre"
-                                    placeholder={data?.name}
+                                    placeholder={product?.name}
                                 />
                             </div>
                         )}
@@ -245,7 +246,7 @@ export function UpdateProductForm({ id }: { id: number }) {
                                 <TextAreaField
                                     field={field}
                                     name="Descripcion"
-                                    placeholder={data?.desc}
+                                    placeholder={product?.desc}
                                 />
                             </div>
                         )}
@@ -261,14 +262,14 @@ export function UpdateProductForm({ id }: { id: number }) {
                                     field={field}
                                     name="Precio"
                                     type="number"
-                                    placeholder={data?.price.toString()}
+                                    placeholder={product?.price.toString()}
                                 />
                             </div>
                         )}
                     />
 
                     {/* TYPE */}
-                    <Tabs value={data?.type}>
+                    <Tabs value={product?.type}>
                         <TabsList>
                             <TabsTrigger value={ProductType.food}>Comida</TabsTrigger>
                             <TabsTrigger value={ProductType.drink}>Bebida</TabsTrigger>

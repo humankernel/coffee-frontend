@@ -7,9 +7,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { AddToCartButton } from "@/components/cart";
 
 export const Route = createFileRoute("/_public/store/$productId")({
-    component: ProductPage,
     loader: ({ context: { queryClient }, params: { productId } }) =>
         queryClient.ensureQueryData(productOptions(+productId)),
+    component: ProductPage,
 });
 
 function ProductPage() {

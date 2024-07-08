@@ -22,56 +22,51 @@ type ProductProps = {
 };
 
 export function ProductCard(product: Product) {
-    const { id, name, people, stars, discount, price } = product;
-
     return (
         <Card>
             <CardHeader>
                 <div className="h-48 w-full">
-                    <Link
-                        to="/store/$productId"
-                        params={(prev) => ({ ...prev, productId: id })}
-                    >
+                    <Link to="/store/$productId" params={{ productId: product.id }} >
                         <img
                             className="mx-auto h-full"
                             src="/coffee.jpg"
-                            alt={name}
+                            alt={product.name}
                         />
                     </Link>
                 </div>
             </CardHeader>
             <CardContent>
                 <div className="flex items-center justify-between gap-4 opacity-60">
-                    {discount !== 0 && (
+                    {product.discount !== 0 && (
                         <span className="me-2 text-xs font-medium">
-                            {discount}% descuento
+                            {product.discount}% descuento
                         </span>
                     )}
                 </div>
 
                 <Link
                     to="/store/$productId"
-                    params={(prev) => ({ ...prev, productId: id })}
+                    params={{ productId: product.id }}
                     className="text-lg font-semibold leading-tight hover:underline"
                 >
-                    {name}
+                    {product.name}
                 </Link>
 
                 <div className="mt-2 flex items-center gap-2">
-                    <Stars stars={stars} />
+                    <Stars stars={product.stars} />
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
                         {" "}
-                        {stars}{" "}
+                        {product.stars}{" "}
                     </p>
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        ({people})
+                        ({product.people})
                     </p>
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between">
                 <p className="text-2xl font-extrabold leading-tight">
                     {" "}
-                    ${price}{" "}
+                    ${product.price}{" "}
                 </p>
 
                 <div>
@@ -93,7 +88,7 @@ export function ProductCardHorizontal({
             <CardContent>
                 <Link
                     to="/store/$productId"
-                    params={(prev) => ({ ...prev, productId: id })}
+                    params={{ productId: id }}
                 >
                     <img
                         className="h-[100px] w-[100px] rounded-b-sm hover:shadow-2xl max-w-[100px]"

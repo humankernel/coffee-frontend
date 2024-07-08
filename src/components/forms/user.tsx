@@ -10,27 +10,18 @@ import {
     roleValidators,
 } from "@/components/forms/validators";
 // shadcn
-import { User, getUserById, insertUser, updateUser } from "@/api/users";
+import { User, getUserById, updateUserById } from "@/api/users";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ROLES } from "@/constants";
+import { useCreateUser, useUpdateUser } from "@/queries/users";
 
-export function InsertUserForm() {
-    const queryClient = useQueryClient();
-
-    const { mutateAsync } = useMutation({
-        mutationKey: ["insert-user"],
-        mutationFn: insertUser,
-        onSuccess: () => {
-            toast.success("Usuario insertado correctamente");
-            queryClient.invalidateQueries({ queryKey: ["users"] });
-        },
-        onError: () => toast.error("Error al insertar el usuario"),
-    });
+export function CreateUserForm() {
+    const { mutateAsync: createUser } = useCreateUser()
 
     const form = useForm({
-        defaultValues: { name: "", age: "", username: "", password: "", role: "" },
-        onSubmit: async ({ value }) => mutateAsync(value),
+        defaultValues: { name: "", age: 0, username: "", password: "", role: "" },
+        onSubmit: async ({ value }) => createUser(value),
         validatorAdapter: zodValidator,
     });
 
@@ -122,26 +113,16 @@ export function InsertUserForm() {
 }
 
 export function UpdateUserForm({ id }: { id: number }) {
-    const queryClient = useQueryClient();
-
     const { data } = useQuery({
         queryKey: [id, "user"],
         queryFn: async () => getUserById(id),
     });
 
-    const { mutateAsync } = useMutation({
-        mutationKey: [id, "update-user"],
-        mutationFn: (value: Partial<User>) => updateUser(id, value),
-        onSuccess: () => {
-            toast.success("Usuario actualizado correctamente");
-            queryClient.invalidateQueries({ queryKey: ["users"] });
-        },
-        onError: () => toast.error("Error al actualizar el usuario"),
-    });
+    const { mutateAsync: updateUser } = useUpdateUser()
 
     const form = useForm({
         defaultValues: { name: "", age: "", username: "", password: "", role: "", },
-        onSubmit: async ({ value }) => mutateAsync(value),
+        onSubmit: async ({ value }) => updateUser({ id, user: value }),
         validatorAdapter: zodValidator,
     });
 

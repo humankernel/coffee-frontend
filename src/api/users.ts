@@ -28,12 +28,12 @@ export async function getUsers(): Promise<User[]> {
     return data;
 }
 
-export async function insertUser(user: Omit<User, "id">): Promise<User> {
+export async function createUser(user: Omit<User, "id">): Promise<User> {
     const { data } = await api.post<User>("/users", user);
     return data;
 }
 
-export async function updateUser(
+export async function updateUserById(
     id: number,
     user: Partial<User>,
 ): Promise<User> {

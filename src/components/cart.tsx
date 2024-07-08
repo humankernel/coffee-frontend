@@ -24,14 +24,6 @@ import { createSale } from "@/api/sales";
 import { redirect } from "@tanstack/react-router";
 import { useCallback } from "react";
 
-export function FavoriteButton({ productId }: { productId: number }) {
-    return (
-        <Button size="icon" variant="ghost" onClick={() => { }}>
-            <HeartIcon className="h-4 w-4" />
-        </Button>
-    );
-}
-
 export function AddToCartButton({ product }: { product: Product }) {
     const handleAddToCart = useCartStore((s) => s.add);
     return (
@@ -93,7 +85,7 @@ export function RemoveAllFromButton({ productId }: { productId: number }) {
     );
 }
 
-const fallback = "/";
+const fallback = "/store";
 
 export function CartDropdown() {
     const cart = useCartStore((s) => s.cart);

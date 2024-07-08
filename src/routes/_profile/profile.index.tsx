@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { User, updateUser } from "@/api/users";
+import { User, updateUserById } from "@/api/users";
 import { queryClient } from "@/main";
 import { useAuth } from "@/context/auth";
 import {
@@ -39,7 +39,7 @@ function ProfilePage() {
 
     const { mutateAsync } = useMutation({
         mutationKey: [user?.sub, "update-user"],
-        mutationFn: (value: Partial<User>) => updateUser(user?.sub, value),
+        mutationFn: (value: Partial<User>) => updateUserById(user?.sub, value),
         onSuccess: () => {
             toast.success("Usuario actualizado correctamente");
             queryClient.invalidateQueries({ queryKey: ["users"] });

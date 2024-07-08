@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { CS, CsType, Status } from "@/api/qs";
-import { UpdateQsForm } from "@/components/forms/qs";
+import { UpdateCsForm } from "@/components/forms/cs";
 // shadcn
 import { Button } from "@/components/ui/button";
 import {
@@ -127,7 +127,7 @@ export const columns: ColumnDef<CS>[] = [
                     </DropdownMenuItem>
                     <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                         <UpdateDialog title="Queja/Sugerencia">
-                            <UpdateQsForm id={row.original.id} />
+                            <UpdateCsForm id={row.original.id} />
                         </UpdateDialog>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
